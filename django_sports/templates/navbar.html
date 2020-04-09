@@ -1,0 +1,42 @@
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+  <div class="container-fluid narrower">
+    <a class="navbar-brand" href="{% url 'pages:homepage' %}">Shane Come up With a Title You Dingus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href='{% url "pages:logout_success" %}'>Logout</a>
+        </li>
+        {% endif %}
+        {% if not request.user.is_authenticated %}
+        <li class="nav-item login-btn">
+          <a type='submit' class="nav-link" href="/login">Log In</a>
+        </li>
+        <li class="nav-item one-px-down">
+          <a class="nav-link" href='{% url "pages:sign_up" %}'>Sign Up</a>
+        </li>
+        {% endif %}
+        {% if 'games/' not in request.get_full_path %}
+        <li class="nav-item one-px-down">
+          <a class="nav-link" href="{% url 'pages:games' %}">Games</a>
+        </li>
+        {% endif %}
+        {% if request.get_full_path == '/' %}
+          {% if request.user.is_authenticated %}
+          <li class="nav-item one-px-down">
+            <a class="nav-link" href="{% url 'pages:my_shares' %}">My Shares</a>
+          </li>
+          {% endif %}
+        {% else %}
+        <li class="nav-item one-px-down">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

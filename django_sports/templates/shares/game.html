@@ -1,0 +1,55 @@
+<!-- card of share -->
+<div class="col-md-3 mx-auto">
+  <div class="card bet-display col-md-12">
+    <div class="card-header d-flex justify-content-center">
+    </div>
+    <div class="card-body">
+      <div class="extra-bottom">
+        <h4 class="card-title d-flex justify-content-center">{{ share.home }} vs {{ share.away }}</h4>
+      </div>
+      {% if request.user.is_authenticated %}
+      <a data-toggle="modal" href="#test{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Purchase</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="test{{ share.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class="text-uppercase center-text">{{ share.home }} vs {{ share.away }}</h2>
+              <ul class="game-list list-inline">
+                <li>{{ share.home }} ML: {{ share.awayML }}</li>
+                <li>{{ share.away }} ML: {{ share.homeML }}</li>
+                <li>{{ share.home }} Spread: {{ share.homeSpread }}</li>
+                <li>{{ share.away }} Spread: {{ share.awaySpread }}</li>
+                <!-- <li>Amount to invest: 0</li>
+                <li>To Win: 0</li> -->
+              </ul>
+              <form class='game-list' action='{% url "pages:game_success" %}' method='POST'>
+                {% csrf_token %}
+                <input name="share" type="hidden" value="{{ share.id }}">
+                <input class="form-control extra-bottom" type="text" name="amount" placeholder="Enter Amount to Wager">
+                <button class="btn btn-primary" name='homeML' type="submit">{{ share.home }} wins</button>
+                <button class="btn btn-primary" name='awayML' type="submit">{{ share.away }} wins</button>
+                <button class="btn btn-primary" name='homeSpread' type="submit">{{ share.home }} spread</button>
+                <button class="btn btn-primary" name='awaySpread' type="submit">{{ share.away }} spread</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

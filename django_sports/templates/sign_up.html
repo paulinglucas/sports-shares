@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="nav-whitespace">
+</div>
+
+<div class="row align-items-center">
+  <h2 class='seeds-header'>Sign up Form</h2>
+</div>
+
+{% if success == 'no' %}
+<div class="row align-items-center">
+  <p class='seeds-header error-text'>Passwords don't match / incorrect password format</p>
+</div>
+{% endif %}
+
+<br>
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <p class="text-center">
+      {{ field.label_tag }}<br>
+      {{ field }}
+      <div class='center-text parent-center'>
+      {% if field.help_text and field.help_text != 'Last Name' %}
+        <small class='center-text help-text' style="">{{ field.help_text }}</small>
+      {% endif %}
+      </div>
+      {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+      {% endfor %}
+    </p>
+  {% endfor %}
+  <div class="text-center">
+    <button class="btn btn-primary" type="submit">Sign up</button>
+  </div>
+</form>
+{% endblock %}

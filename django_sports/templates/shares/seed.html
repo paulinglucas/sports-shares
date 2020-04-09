@@ -1,0 +1,14 @@
+<section class="bets" id="test-{{ seed }}-seeds">
+  <div class="container">
+    <div class="row align-items-center">
+      <h1 class="seeds-header mb-0">#{{ seed }} Seeds</h1>
+    </div>
+    <div class="row align-items-center">
+      <!-- place shares of seed in here -->
+      {% for share in shares %}
+        {% include 'shares/share.html' with share=share %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>

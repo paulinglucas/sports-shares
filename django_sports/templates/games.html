@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='whitespace'>
+</div>
+<div class='container'>
+  <div class='row'>
+  {% for game in games %}
+    {% include 'shares/game.html' with share=game %}
+  {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

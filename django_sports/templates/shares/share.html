@@ -1,0 +1,50 @@
+<!-- card of share -->
+<div class="col-md-3 mx-auto">
+  <div class="card bet-display col-md-12">
+    <div class="card-header d-flex justify-content-center">
+      <h4>{{ share.convertOddsToStr }}</h4>
+    </div>
+    <div class="card-body">
+      <h4 class="card-title d-flex justify-content-center">{{ share.name }}</h4>
+      <h6 class="d-flex justify-content-center extra-margin">{{ share.pricePerShare }} / share</h6>
+      {% if request.user.is_authenticated %}
+      <a data-toggle="modal" href="#test{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Invest</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="test{{ share.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class="text-uppercase center-text">{{ share.name }}</h2>
+              <p class="item-intro text-muted">To win the NBA 2k20 Tournament</p>
+              <ul class="list-inline">
+                <li>Odds {{ share.convertOddsToStr }}</li>
+                <!-- <li>Amount to invest: 0</li>
+                <li>To Win: 0</li> -->
+              </ul>
+              <form action='{% url "pages:invest_success" %}' method='POST'>
+                {% csrf_token %}
+                <input name="share" type="hidden" value="{{ share.id }}">
+                <input class="form-control extra-bottom" type="text" name="num_shares" placeholder="Enter # of Shares">
+                <button class="btn btn-primary" type="submit">Purchase Shares</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

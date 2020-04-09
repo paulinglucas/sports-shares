@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="nav-whitespace"></div>
+  <div>
+  <br>
+    <h2 class='seeds-header text-center'>Login to your account</h2>
+    <br>
+    <form action="{% url 'pages:login_success' %}" method="post">
+      {% csrf_token %}
+      <div class="d-block text-center">
+        <input class="d-inline-block" type="text" name="username" placeholder="username" />
+      </div>
+      <br>
+      <div class="d-block text-center">
+        <input class="d-inline-block" type="password" name="password" placeholder="password" />
+      </div>
+      <br>
+      <div class="d-block text-center">
+        <button class="btn btn-primary" type="submit" class="btn">Login</button>
+      </div>
+      <!-- <a class="forgot" href="#">Forgot Username?</a> -->
+    </form>
+  </div><!--end log form -->
+</div>
+{% endblock %}
