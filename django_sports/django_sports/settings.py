@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '2trn#c2j4zm9l5q86w3_%i@6f%1z$*!4wkrrlxew_w^2&_z*es')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.2ktourney.com']
 
 
 # Application definition
@@ -139,7 +139,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_ROOT = ''
+STATIC_ROOT = '/home/paulinglucas/sports-shares/django_sports/static'
 
 STATIC_URL = '/static/'
 
