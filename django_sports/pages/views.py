@@ -20,7 +20,7 @@ def checkIfGamesWon():
 	shares_to_delete = []
 	for share in InvestedGame.objects.all():
 		if share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread:
-			if share not in shares_to_delete:
+			if share.game not in shares_to_delete:
 				shares_to_delete.append(share.game)
 			if share.game.didHomeWin:
 				if share.bet == 1:
@@ -38,7 +38,6 @@ def checkIfGamesWon():
 			share.delete()
 
 	for share in shares_to_delete:
-		share.game.delete()
 		share.delete()
 
 def home_view(request):
