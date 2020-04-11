@@ -5,9 +5,10 @@ from django.db import models
 class Share(models.Model):
     name = models.CharField(max_length=100)
     seed = models.IntegerField()
-    initialAmount = models.IntegerField(default=1000)
+    initialAmount = models.IntegerField(default=50)
     americanOdds = models.IntegerField()
     pricePerShare = models.CharField(max_length=100, blank=True)
+    hidden = models.BooleanField(default=False)
     win = models.BooleanField(default=False)
     # moneyInvested = models.FloatField()
     # moneyToWin = models.FloatField()

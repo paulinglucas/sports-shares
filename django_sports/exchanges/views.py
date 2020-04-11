@@ -12,32 +12,31 @@ def send_sell_request(request):
     if numShares > inv_share.numSharesHeld:
         return redirect('/my_shares/')
 
-    receiver_username = request.POST.get('username')
-    receiver = User.objects.get(username=receiver_username)
+    # receiver_username = request.POST.get('username')
+    # receiver = User.objects.get(username=receiver_username)
     sell_request = Request.objects.createRequest(
         request.user.profile,
-        receiver.profile,
         numShares,
         inv_share
     )
     return render(request, 'success/sent_success.html')
 
-def reject_request(request):
-    if request.method == 'POST':
-        req_id = request.POST.get('req')
-        req = Request.objects.get(id=req_id)
-        req.delete()
-
-        return redirect('/my_shares/')
-    else:
-        return render(request, 'my_shares.html')
+# def reject_request(request):
+#     if request.method == 'POST':
+#         req_id = request.POST.get('req')
+#         req = Request.objects.get(id=req_id)
+#         req.delete()
+#
+#         return redirect('/my_shares/')
+#     else:
+#         return render(request, 'my_shares.html')
 
 def accept_request(request):
     if request.method == 'POST':
         req_id = request.POST.get('req')
         req = Request.objects.get(id=req_id)
         richer = req.sender
-        buyer = req.receiver
+        buyer = request.user.profile
         richer.current_profit += Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
         if req.numShares == req.inv_share.numSharesHeld:
             req.inv_share.user = buyer.user

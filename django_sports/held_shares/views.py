@@ -8,6 +8,12 @@ def add_share_to_investments_view(request):
     id = request.POST.get('share')
     share = Share.objects.get(id=id)
     num_shares = int(request.POST.get('num_shares', 0))
+    if num_shares > share.initialAmount:
+        return redirect('/')
+    share.initialAmount -= num_shares
+    if share.initialAmount == 0:
+        share.hidden = True
+    share.save()
 
     inv_share = InvestedShare.objects.createInvestment(
         request.user,
@@ -45,8 +51,8 @@ def game_success_view(request):
             else:
                 odds = 1 + (amOdds/100)
         else:
-            amOdds = -120
-            odds = 1 - (100/-120)
+            amOdds = -110
+            odds = 1 - (100/amOdds)
             if 'homeSpread' in data:
                 bet = 3
             else:

@@ -5,7 +5,7 @@
   <p class='share-element'># Shares: {{ request.numShares }}</p>
   <div class="row">
     <a data-toggle="modal" href="#portfolioModal2" class="btn btn-primary d-flex justify-content-center buy-btn">Buy</a>
-    <a data-toggle="modal" href="#portfolioModal3" class="btn btn-primary d-flex justify-content-center reject-btn">Reject</a>
+    <!-- <a data-toggle="modal" href="#portfolioModal3" class="btn btn-primary d-flex justify-content-center reject-btn">Reject</a> -->
   </div>
 
   <div class='share-breakline'></div>
@@ -50,7 +50,7 @@
 </div>
 
 <!-- modal of share -->
-<div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">
@@ -63,12 +63,12 @@
           <div class="col-lg-8 mx-auto">
             <div class="modal-body parent-center">
               <!-- Project Details Go Here -->
-              <h2 class="text-uppercase center-text">Are you sure?</h2>
+              <!-- <h2 class="text-uppercase center-text">Are you sure?</h2>
               <p class="item-intro text-muted">Reject</p>
               <ul class="list-inline">
               <div class="row">
                 <div class="col-sm-6 float-left">
-                  <form action='{% url "pages:reject_request" %}' method="POST">
+                  <form action='' method="POST">
                     {% csrf_token %}
                     <input type='hidden' name='req' value='{{ request.id }}' />
                     <button class="btn btn-primary confirm-btn float-left" type="submit">Yes</button>
@@ -84,4 +84,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

@@ -20,10 +20,8 @@ def checkIfBetsWon():
 
 def checkIfGamesWon():
 	shares_to_delete = []
-	print('hello2')
 	for share in InvestedGame.objects.all():
 		if share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread:
-			print('hello')
 			if share.game not in shares_to_delete:
 				shares_to_delete.append(share.game)
 			if share.game.didHomeWin:
@@ -49,7 +47,12 @@ def checkIfGamesWon():
 
 
 def home_view(request):
-	shares = Share.objects.all()
+
+	for s in Share.objects.filter(hidden=True):
+		if s.initialAmount > 0:
+			s.hidden = False
+			s.save()
+	shares = Share.objects.exclude(hidden=True)
 	active_seeds = []
 	checkIfBetsWon()
 	checkIfGamesWon()
@@ -71,7 +74,7 @@ def my_shares_view(request):
 		current_profit = request.user.profile.current_profit
 		shares = InvestedShare.objects.filter(user=request.user)
 		game_shares = InvestedGame.objects.filter(user=request.user)
-		my_requests = Request.objects.filter(receiver=request.user.profile)
+		my_requests = Request.objects.exclude(sender=request.user.profile)
 
 	context = {
 		'profit': current_profit,
