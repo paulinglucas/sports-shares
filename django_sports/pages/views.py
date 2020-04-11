@@ -13,13 +13,17 @@ def checkIfBetsWon():
 			if share.share not in shares_to_delete:
 				shares_to_delete.append(share.share)
 			share.delete()
-	for share in shares_to_delete:
-		share.delete()
+			for share in Share.objects.all():
+				share.delete()
+	# for share in shares_to_delete:
+	# 	share.delete()
 
 def checkIfGamesWon():
 	shares_to_delete = []
+	print('hello2')
 	for share in InvestedGame.objects.all():
 		if share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread:
+			print('hello')
 			if share.game not in shares_to_delete:
 				shares_to_delete.append(share.game)
 			if share.game.didHomeWin:
@@ -36,9 +40,13 @@ def checkIfGamesWon():
 					share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
 			share.user.profile.save()
 			share.delete()
-
 	for share in shares_to_delete:
 		share.delete()
+
+	for game in Game.objects.all():
+		if game.didHomeWin or game.didAwayWin or game.didHomeSpread or game.didAwaySpread:
+			game.delete()
+
 
 def home_view(request):
 	shares = Share.objects.all()
