@@ -38,6 +38,7 @@ def checkIfGamesWon():
 			share.delete()
 
 	for share in shares_to_delete:
+		share.game.delete()
 		share.delete()
 
 def home_view(request):
