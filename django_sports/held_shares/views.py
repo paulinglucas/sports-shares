@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from shares.models import Share, Game
 from held_shares.models import InvestedShare, InvestedShareManager, InvestedGame
 from decimal import Decimal

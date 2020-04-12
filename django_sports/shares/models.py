@@ -7,8 +7,9 @@ class Share(models.Model):
     seed = models.IntegerField()
     initialAmount = models.IntegerField(default=50)
     americanOdds = models.IntegerField()
-    pricePerShare = models.CharField(max_length=100, blank=True)
-    hidden = models.BooleanField(default=False)
+    pricePerShare = models.CharField(max_length=100, blank=True, editable=False)
+    hidden = models.BooleanField(default=False, editable=False)
+    done = models.BooleanField(default=False)
     win = models.BooleanField(default=False)
     # moneyInvested = models.FloatField()
     # moneyToWin = models.FloatField()
@@ -39,6 +40,8 @@ class Share(models.Model):
             return "5.00"
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.done:
+            self.hidden = True
         if not self.pricePerShare:
             self.pricePerShare = self.getPPS(self.americanOdds)
         if self.oldOdds != self.americanOdds:
@@ -57,6 +60,10 @@ class Game(models.Model):
     didHomeSpread = models.BooleanField(default=False)
     didAwayWin = models.BooleanField(default=False)
     didAwaySpread = models.BooleanField(default=False)
+    # maxToRisk = models.DecimalField(max_digits=10000, decimal_places=2, blank=True)
+    maxToWin = models.DecimalField(max_digits=10000, decimal_places=2, default=100)
+    gameStarted = models.BooleanField(default=False)
+    gameOver = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return self.home + " vs " + self.away

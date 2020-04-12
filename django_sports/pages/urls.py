@@ -21,7 +21,7 @@ urlpatterns = [
 	path('game_success/', invest_views.game_success_view, name="game_success"),
 	path('sent_success/', exchange_views.send_sell_request, name="sell_request"),
 	# buy request response options
-	# path('my_shares/reject', exchange_views.reject_request, name='reject_request'),
+	path('my_shares/reject', exchange_views.reject_request, name='reject_request'),
 	path('my_shares/accept', exchange_views.accept_request, name='accept_request')
 
 ]

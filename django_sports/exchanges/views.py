@@ -21,15 +21,14 @@ def send_sell_request(request):
     )
     return render(request, 'success/sent_success.html')
 
-# def reject_request(request):
-#     if request.method == 'POST':
-#         req_id = request.POST.get('req')
-#         req = Request.objects.get(id=req_id)
-#         req.delete()
-#
-#         return redirect('/my_shares/')
-#     else:
-#         return render(request, 'my_shares.html')
+def reject_request(request):
+    if request.method == 'POST':
+        req_id = request.POST.get('req')
+        req = Request.objects.get(id=req_id)
+        req.delete()
+
+        return redirect('/my_shares/')
+        return render(request, 'my_shares.html')
 
 def accept_request(request):
     if request.method == 'POST':

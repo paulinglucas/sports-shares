@@ -21,11 +21,12 @@ class InvestedShare(models.Model):
     share = models.ForeignKey(Share, on_delete=models.CASCADE)
     numSharesHeld = models.IntegerField()
     boughtAt = models.CharField(max_length=100, blank=True)
+    hidden = models.BooleanField(default=False, editable=False)
 
     objects = InvestedShareManager()
 
     def __str__(self):
-        return self.share.name + " Invested"
+        return self.user.profile.first_name + " holds " + str(self.numSharesHeld) + " shares in " + self.share.name
 
 class InvestedGame(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -35,8 +36,9 @@ class InvestedGame(models.Model):
     oddsAtPurchase = models.FloatField()
     # 1=homeML, 2=awayML, 3=homeSpread, 4=awaySpread
     bet = models.IntegerField()
+    hidden = models.BooleanField(default=False, editable=False)
 
     objects = InvestedGameManager()
 
     def __str__(self):
-        return self.game.home + " vs " + self.game.away
+        return self.user.profile.first_name + " bet " + str(self.amountUsed) + " on " + self.game.home + " vs " + self.game.away

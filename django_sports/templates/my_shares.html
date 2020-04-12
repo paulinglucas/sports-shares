@@ -32,8 +32,11 @@
     </div>
 
     <div class="col-sm-6 buy-requests">
+      {% for request in my_sells %}
+        {% include 'shares/share_request.html' with req=req %}
+      {% endfor %}
       {% for request in my_requests %}
-        {% include 'shares/share_request.html' with request=request %}
+        {% include 'shares/share_request.html' with req=req %}
       {% endfor %}
     </div>
   </div>
