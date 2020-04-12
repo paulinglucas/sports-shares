@@ -3,14 +3,14 @@
   <p class='share-element'># Shares Held: {{ my_share.numSharesHeld }}</p>
   <p class='share-element'>Bought At: {{ my_share.boughtAt }}</p>
   <p class='share-element'>Current Price:  {{ my_share.share.pricePerShare }}</p>
-  <a data-toggle="modal" href="#portfolioModal1" class="btn btn-primary d-flex justify-content-center sell-btn">Sell</a>
+  <a data-toggle="modal" href="#test{{ my_share.id }}" class="btn btn-primary d-flex justify-content-center sell-btn">Sell</a>
 
   <div class='share-breakline'></div>
 
 </div>
 
 <!-- modal of share -->
-<div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="test{{ my_share.id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">
