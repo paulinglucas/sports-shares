@@ -1,2 +1,3 @@
 django_sports/db.sqlite3
 django_sports/django_sports/settings.py
+/__pycache__
