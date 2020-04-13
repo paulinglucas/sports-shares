@@ -8,7 +8,7 @@
       <h4 class="card-title d-flex justify-content-center">{{ share.name }}</h4>
       <h6 class="d-flex justify-content-center extra-margin">{{ share.pricePerShare }} / share</h6>
       <h6 class="d-flex justify-content-center extra-margin">{{ share.initialAmount }} Shares Left</h6>
-      {% if request.user.is_authenticated %}
+      {% if request.user.is_authenticated and share.initialAmount > 0 %}
       <a data-toggle="modal" href="#test{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Invest</a>
       {% endif %}
     </div>

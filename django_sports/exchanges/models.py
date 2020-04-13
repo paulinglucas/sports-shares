@@ -12,9 +12,11 @@ class RequestManager(models.Manager):
 
 class Request(models.Model):
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='request_sender')
-    # receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='request_receiver', blank=True)
+    receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='request_receiver', blank=True, null=True)
     inv_share = models.ForeignKey(InvestedShare, on_delete=models.CASCADE)
     numShares = models.IntegerField()
+    salePrice = models.DecimalField(max_digits=10000, decimal_places=2, default=-1.00)
+    hidden = models.BooleanField(default=False)
 
     objects = RequestManager()
 

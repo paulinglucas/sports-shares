@@ -23,7 +23,7 @@ def send_sell_request(request):
 
 def reject_request(request):
     if request.method == 'POST':
-        req_id = request.POST.get('req')
+        req_id = request.POST.get('req_id')
         req = Request.objects.get(id=req_id)
         req.delete()
 
@@ -36,23 +36,24 @@ def accept_request(request):
         req = Request.objects.get(id=req_id)
         richer = req.sender
         buyer = request.user.profile
-        richer.current_profit += Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
+        req.receiver = buyer
+        req.salePrice = req.inv_share.share.pricePerShare
+        req.hidden = True
+        # richer.current_profit += Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
         if req.numShares == req.inv_share.numSharesHeld:
-            req.inv_share.user = buyer.user
-        else:
-            new_share = InvestedShare.objects.create(
-                user = buyer.user,
-                share = req.inv_share.share,
-                numSharesHeld = req.numShares,
-                boughtAt = req.inv_share.share.pricePerShare
-            )
-            req.inv_share.numSharesHeld -= req.numShares
-
-        buyer.current_profit -= Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
+            req.inv_share.hidden = True
+        new_share = InvestedShare.objects.create(
+            user = buyer.user,
+            share = req.inv_share.share,
+            numSharesHeld = req.numShares,
+            boughtAt = req.inv_share.share.pricePerShare
+        )
+        req.inv_share.numSharesHeld -= req.numShares
         req.inv_share.save()
-        req.delete()
-        richer.save()
-        buyer.save()
+
+        req.save()
+
+        # buyer.current_profit -= Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
 
         return redirect('/my_shares/')
     else:
