@@ -8,7 +8,7 @@ class Share(models.Model):
     initialAmount = models.IntegerField(default=50)
     americanOdds = models.IntegerField()
     pricePerShare = models.CharField(max_length=100, blank=True, editable=False)
-    hidden = models.BooleanField(default=False, editable=False)
+    hidden = models.BooleanField(default=False)
     done = models.BooleanField(default=False)
     win = models.BooleanField(default=False)
     # moneyInvested = models.FloatField()
