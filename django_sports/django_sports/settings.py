@@ -143,4 +143,4 @@ STATIC_ROOT = '/home/paulinglucas/sports-shares/django_sports/static'
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ( os.path.join('static'), )
+# STATICFILES_DIRS = ( os.path.join('static'), )
