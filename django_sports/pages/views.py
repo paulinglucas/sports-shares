@@ -20,7 +20,7 @@ def checkIfBetsWon():
 
 def checkIfGamesWon():
 	for share in InvestedGame.objects.all():
-		if (share.game.gameOver == False) and (share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread):
+		if (share.game.gameOver == True) and (share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread):
 			if share.game.didHomeWin and share.bet == 1:
 				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
 			if share.game.didAwayWin and share.bet == 2:
