@@ -30,8 +30,8 @@ def checkIfGamesWon():
 			if share.game.didAwaySpread and share.bet == 4:
 				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
 			share.user.profile.save()
-			share.gameOver = True
-			share.save()
+			share.game.gameOver = True
+			share.game.save()
 
 def home_view(request):
 	for s in Share.objects.filter(hidden=True):
