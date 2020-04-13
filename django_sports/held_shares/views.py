@@ -11,8 +11,6 @@ def add_share_to_investments_view(request):
     if num_shares > share.initialAmount:
         return redirect('/')
     share.initialAmount -= num_shares
-    if share.initialAmount == 0:
-        share.hidden = True
     share.save()
 
     inv_share = InvestedShare.objects.createInvestment(
@@ -21,8 +19,8 @@ def add_share_to_investments_view(request):
         num_shares,
         share.pricePerShare
     )
-    request.user.profile.current_profit -= Decimal(round(num_shares*float(share.pricePerShare), 2))
-    request.user.profile.save()
+    # request.user.profile.current_profit -= Decimal(round(num_shares*float(share.pricePerShare), 2))
+    # request.user.profile.save()
 
     return render(request, 'success/invest_success.html')
 
@@ -67,8 +65,8 @@ def game_success_view(request):
             bet
         )
 
-        request.user.profile.current_profit -= Decimal(amount)
-        request.user.profile.save()
+        # request.user.profile.current_profit -= Decimal(amount)
+        # request.user.profile.save()
 
         context = {}
         return render(request, 'success/game_success.html', context)

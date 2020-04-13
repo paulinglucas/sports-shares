@@ -3,42 +3,22 @@ from shares.models import Share, Game
 from held_shares.models import InvestedShare, InvestedGame
 from exchanges.models import Request
 from decimal import Decimal
+from odds_update.views import calculateProfit
 
 def checkIfBetsWon():
-	for share in InvestedShare.objects.all():
-		if share.share.done == True:
+	for share in Share.objects.all():
+		if share.done == True or share.win == True:
 			share.hidden = True
 			share.save()
-		if share.share.win == True:
-			share.user.profile.current_profit += Decimal(share.numSharesHeld*10)
-			share.user.profile.save()
-			share.hidden = True
-			share.save()
-			for share in Share.objects.all():
-				share.hidden = True
-				share.save()
 
 def checkIfGamesWon():
-	for share in InvestedGame.objects.all():
-		if (share.game.gameOver == True) and (share.game.didHomeWin or share.game.didAwayWin or share.game.didHomeSpread or share.game.didAwaySpread):
-			if share.game.didHomeWin and share.bet == 1:
-				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
-			if share.game.didAwayWin and share.bet == 2:
-				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
-			if share.game.didHomeSpread and share.bet == 3:
-				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
-			if share.game.didAwaySpread and share.bet == 4:
-				share.user.profile.current_profit += round(Decimal(share.oddsAtPurchase)*share.amountUsed, 2)
-			share.user.profile.save()
-			share.game.gameOver = True
-			share.game.save()
+	for game in Game.objects.all():
+		if (game.gameOver == False) and (game.didHomeWin or game.didAwayWin or game.didHomeSpread or game.didAwaySpread):
+			game.gameOver = True
+			game.save()
 
 def home_view(request):
-	for s in Share.objects.filter(hidden=True):
-		if s.initialAmount > 0 and s.done == False:
-			s.hidden = False
-			s.save()
-	shares = Share.objects.exclude(hidden=True)
+	shares = Share.objects.exclude(done=True)
 	active_seeds = []
 	checkIfBetsWon()
 	checkIfGamesWon()
@@ -57,11 +37,12 @@ def home_view(request):
 
 def my_shares_view(request):
 	if not request.user.is_anonymous:
+		calculateProfit(request)
 		current_profit = request.user.profile.current_profit
 		shares = InvestedShare.objects.filter(user=request.user).exclude(hidden=True)
 		game_shares = InvestedGame.objects.filter(user=request.user) #.exclude(game.gameOver=True)
-		my_requests = Request.objects.exclude(sender=request.user.profile)
-		my_sells = Request.objects.filter(sender=request.user.profile)
+		my_requests = Request.objects.exclude(sender=request.user.profile).exclude(hidden=True)
+		my_sells = Request.objects.filter(sender=request.user.profile).exclude(hidden=True)
 
 	context = {
 		'profit': current_profit,

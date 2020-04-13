@@ -1,17 +1,17 @@
 <div class="row nav-whitespace d-block">
-  <h4 class="mb-0 share-title">{{ request.inv_share.share.name }}</h4>
-  <p class='share-element'>Seller: {{ request.sender.user.username }}</p>
-  <p class='share-element'>Current Price: {{ request.inv_share.share.pricePerShare }}</p>
-  <p class='share-element'># Shares: {{ request.numShares }}</p>
+  <h4 class="mb-0 share-title">{{ req.inv_share.share.name }}</h4>
+  <p class='share-element'>Seller: {{ req.sender.user.username }}</p>
+  <p class='share-element'>Current Price: {{ req.inv_share.share.pricePerShare }}</p>
+  <p class='share-element'># Shares: {{ req.numShares }}</p>
   <div class="row">
     {% if req.sender == request.user.profile %}
     <form action='{% url "pages:reject_request" %}' method='POST'>
       {% csrf_token %}
-      <input type='hidden' name='req' value='{{ request.id }}' />
+      <input type='hidden' name='req_id' value='{{ req.id }}' />
       <button type='submit'  style='color: white' class="btn btn-primary d-flex justify-content-center buy-btn">Take Back</button>
     </form>
     {% else %}
-    <a data-toggle="modal" href="#test{{ request.id }}" class="btn btn-primary d-flex justify-content-center buy-btn">Buy</a>
+    <a data-toggle="modal" href="#test{{ req.id }}" class="btn btn-primary d-flex justify-content-center buy-btn">Buy</a>
     {% endif %}
     <!-- <a data-toggle="modal" href="#portfolioModal3" class="btn btn-primary d-flex justify-content-center reject-btn">Reject</a> -->
   </div>
@@ -21,7 +21,7 @@
 </div>
 
 <!-- modal of share -->
-<div class="portfolio-modal modal fade" id="test{{ request.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="test{{ req.id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">
@@ -41,7 +41,7 @@
                 <div class="col-sm-6 float-left">
                   <form action='{% url "pages:accept_request" %}' method="POST">
                     {% csrf_token %}
-                    <input type='hidden' name='req' value='{{ request.id }}' />
+                    <input type='hidden' name='req' value='{{ req.id }}' />
                     <button class="btn btn-primary confirm-btn float-left" type="submit">Yes</button>
                   </form>
                 </div>
