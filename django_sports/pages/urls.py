@@ -3,6 +3,7 @@ from . import views
 from login import views as login_views
 from held_shares import views as invest_views
 from exchanges import views as exchange_views
+from history import views as history_views
 
 app_name = 'pages'
 
@@ -22,6 +23,9 @@ urlpatterns = [
 	path('sent_success/', exchange_views.send_sell_request, name="sell_request"),
 	# buy request response options
 	path('my_shares/reject', exchange_views.reject_request, name='reject_request'),
-	path('my_shares/accept', exchange_views.accept_request, name='accept_request')
+	path('my_shares/accept', exchange_views.accept_request, name='accept_request'),
+	# user history
+	path('user_history/', history_views.user_history_view, name='user_history'),
+	path('user_history/user/', history_views.user_view, name='user_view')
 
 ]

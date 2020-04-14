@@ -51,7 +51,7 @@ def game_success_view(request):
             inv_share = InvestedGame.objects.createInvestment(
                 request.user,
                 game,
-                round(amount, 2),
+                abs(round(amount, 2)),
                 amOdds,
                 odds,
                 int(bet)
@@ -65,7 +65,7 @@ def game_success_view(request):
             inv_share = InvestedGame.objects.createInvestment(
                 request.user,
                 game,
-                round(amount, 2),
+                abs(round(amount, 2)),
                 amOdds,
                 odds,
                 int(bet)

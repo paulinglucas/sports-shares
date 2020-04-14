@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="nav-whitespace">
+</div>
+
+<div class='container'>
+<div class="row profit">
+  <h4>Current profit: ${{ profit }}</h4>
+</div>
+</div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Pending Shares</h2></div>
+    <div class='row'>
+    {% for share in shares_pending %}
+      <div class ='col-sm-12'>
+        <p><b>{{ share.share.name }}</b>: Bought at {{ share.boughtAt }}, # Shares: {{ share.numSharesHeld }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Pending Games</h2></div>
+    <div class='row'><h5 class='center-text'>Bets: 1 = Home ML, 2 = Away ML, 3 = Home Spread, 4 = Away Spread</h5></div>
+    <div class='row profit'>
+    {% for game in games_pending %}
+      <div class ='col-sm-12'>
+        <p><b>{{ game.game.home }} vs {{ game.game.away }}</b>: Bet Placed: {{ game.bet }}, Amount Wagered: {{ game.amountUsed }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Pending Sales</h2></div>
+    <div class='row'>
+    {% for share in sales_pending %}
+      <div class ='col-sm-12'>
+        <p><b>{{ share }}</b>: Bought at {{ share.inv_share.boughtAt }}, Current Price: {{ share.inv_share.share.pricePerShare }}, # Shares: {{ share.numShares }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Sales</h2></div>
+    <div class='row'>
+    {% for sale in sales %}
+      <div class ='col-sm-12'>
+        <p><b>{{ sale }}</b>: Bought at {{ sale.inv_share.boughtAt }}, Sold at: {{ sale.salePrice }}, # Shares: {{ share.numShares }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Buys</h2></div>
+    <div class='row'>
+    {% for buy in buys %}
+      <div class ='col-sm-12'>
+        <p><b>{{ buy }}</b>: Bought at {{ buy.salePrice }}, # Shares: {{ buy.numShares }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Done Shares</h2></div>
+    <div class='row'>
+    {% for share in shares_done %}
+      <div class ='col-sm-12'>
+        <p><b>{{ share.share.name }}</b>: Bought at {{ share.boughtAt }}, # Shares: {{ share.numSharesHeld }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class='container'>
+    <div class='row profit'><h2 class='center-text'>Done Games</h2></div>
+    <div class='row'><h5 class='center-text'>Bets: 1 = Home ML, 2 = Away ML, 3 = Home Spread, 4 = Away Spread</h5></div>
+    <div class='row profit'>
+    {% for game in games_over %}
+      <div class ='col-sm-12'>
+        <p><b>{{ game }}</b>: Bet Placed: {{ game.bet }}, Win: {{ game.didTheyWin }}</p>
+        <br>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+      {% endblock %}

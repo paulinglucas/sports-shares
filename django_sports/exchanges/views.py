@@ -12,8 +12,6 @@ def send_sell_request(request):
     if numShares > inv_share.numSharesHeld:
         return redirect('/my_shares/')
 
-    # receiver_username = request.POST.get('username')
-    # receiver = User.objects.get(username=receiver_username)
     sell_request = Request.objects.createRequest(
         request.user.profile,
         numShares,
@@ -39,7 +37,6 @@ def accept_request(request):
         req.receiver = buyer
         req.salePrice = req.inv_share.share.pricePerShare
         req.hidden = True
-        # richer.current_profit += Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
         if req.numShares == req.inv_share.numSharesHeld:
             req.inv_share.hidden = True
         new_share = InvestedShare.objects.create(
@@ -52,9 +49,6 @@ def accept_request(request):
         req.inv_share.save()
 
         req.save()
-
-        # buyer.current_profit -= Decimal(round((req.numShares)*float(req.inv_share.share.pricePerShare), 2))
-
         return redirect('/my_shares/')
     else:
         return render(request, 'my_shares.html')

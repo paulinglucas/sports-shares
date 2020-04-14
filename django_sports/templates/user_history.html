@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class='whitespace'>
+</div>
+<div class='center-text profit parent-center'>
+  <h2>Total Profit: ${{ profit }}</h2>
+</div>
+<div class='container'>
+  <div class='row'>
+    {% for user in users %}
+    <div style='margin-top: 5px' class='col-sm-3'>
+      <form action='{% url "pages:user_view" %}' method='POST'>
+       {% csrf_token %}
+       <input type='hidden' name='user_id' value='{{ user.id }}' />
+       <button class='btn-primary' type='submit'>{{ user.profile.first_name }} {{user.profile.last_name}}</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

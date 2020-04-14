@@ -1,5 +1,18 @@
 <div class="row nav-whitespace d-block">
   <h4 class="mb-0 share-title">{{ my_share.game.home }} vs {{ my_share.game.away }}</h4>
+  {% if my_share.bet == 1 or my_share.bet == 2 %}
+    {% if my_share.bet == 1 %}
+    <p class='share-element'>Bet: {{ my_share.game.home }} Moneyline</p>
+    {% else %}
+    <p class='share-element'>Bet: {{ my_share.game.away }} Moneyline</p>
+    {% endif %}
+  {% else %}
+    {% if my_share.bet == 3 %}
+    <p class='share-element'>Bet: {{ my_share.game.home }} Spread ({{ my_share.game.homeSpread }})</p>
+    {% else %}
+    <p class='share-element'>Bet: {{ my_share.game.away }} Spread ({{ my_share.game.awaySpread }})</p>
+    {% endif %}
+  {% endif %}
   <p class='share-element'>Odds: {{ my_share.amOdds }}</p>
   <p class='share-element'>Risked Amount: {{ my_share.amountUsed }}</p>
 

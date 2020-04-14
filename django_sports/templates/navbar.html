@@ -40,6 +40,11 @@
           <a class="nav-link" href="/">Home</a>
         </li>
         {% endif %}
+        {% if request.user.is_superuser %}
+        <li class="nav-item one-px-down">
+          <a class="nav-link" href="{% url 'pages:user_history' %}">User History</a>
+        </li>
+        {% endif %}
       </ul>
     </div>
   </div>

@@ -40,5 +40,18 @@ class InvestedGame(models.Model):
 
     objects = InvestedGameManager()
 
+    def didTheyWin(self):
+        win = False
+        if self.game.gameOver:
+            if self.bet == 1 and self.game.didHomeWin:
+                win = True
+            elif self.bet == 2 and self.game.didAwayWin:
+                win = True
+            elif self.bet == 3 and self.game.didHomeSpread:
+                win = True
+            elif self.bet == 4 and self.game.didAwaySpread:
+                win = True
+        return win
+
     def __str__(self):
         return self.user.profile.first_name + " bet " + str(self.amountUsed) + " on " + self.game.home + " vs " + self.game.away
