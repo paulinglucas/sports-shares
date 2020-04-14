@@ -12,15 +12,23 @@ def checkRequests():
 			req.save()
 
 def checkIfBetsWon():
-	for share in Share.objects.all():
+	for share in Share.objects.exclude(hidden=True):
 		if share.done == True or share.win == True:
+			share.hidden = True
+			share.save()
+	for share in InvestedShare.objects.exclude(hidden=True):
+		if share.share.hidden:
 			share.hidden = True
 			share.save()
 
 def checkIfGamesWon():
-	for game in Game.objects.all():
+	for game in Game.objects.exclude(gameOver=True):
 		if (game.gameOver == False) and (game.didHomeWin or game.didAwayWin or game.didHomeSpread or game.didAwaySpread):
 			game.gameOver = True
+			game.save()
+	for game in InvestedGame.objects.exclude(hidden=True):
+		if game.game.gameOver:
+			game.hidden = True
 			game.save()
 
 def home_view(request):
