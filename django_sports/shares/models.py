@@ -65,13 +65,13 @@ class Game(models.Model):
     gameStarted = models.BooleanField(default=False)
     gameOver = models.BooleanField(default=False, editable=False)
 
-    def convertOdds(self, odds):
-        
-
-    def findMaxToRisk(self):
-
-
-    def convertWinToRisk(self):
-
-    def __str__(self):
-        return self.home + " vs " + self.away
+    # def convertOdds(self, odds):
+    #
+    #
+    # def findMaxToRisk(self):
+    #
+    #
+    # def convertWinToRisk(self):
+    #
+    # def __str__(self):
+    #     return self.home + " vs " + self.away
