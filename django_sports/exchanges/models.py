@@ -22,7 +22,7 @@ class Request(models.Model):
 
     def __str__(self):
         receiverName = ""
-        if not receiver:
+        if not self.receiver:
             receiverName = "____"
         else:
             receiverName = self.receiver.first_name
