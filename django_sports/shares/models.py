@@ -96,7 +96,7 @@ class Game(models.Model):
         return odds
 
     def findMaxToRisk(self, odds):
-        return round((self.maxToWin / Decimal(odds)), 2)
+        return round((self.maxToWin / Decimal(odds-1)), 2)
 
     def __str__(self):
         return self.home + " vs " + self.away
