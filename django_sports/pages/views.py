@@ -5,6 +5,12 @@ from exchanges.models import Request
 from decimal import Decimal
 from odds_update.views import calculateProfit
 
+def checkRequests():
+	for req in Request.objects.all():
+		if req.inv_share.hidden:
+			req.hidden = True
+			req.save()
+
 def checkIfBetsWon():
 	for share in Share.objects.all():
 		if share.done == True or share.win == True:
@@ -36,6 +42,7 @@ def home_view(request):
 	return render(request, 'index.html', context)
 
 def my_shares_view(request):
+	checkRequests()
 	if not request.user.is_anonymous:
 		calculateProfit(request)
 		current_profit = request.user.profile.current_profit
