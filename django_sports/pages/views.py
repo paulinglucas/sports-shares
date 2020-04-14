@@ -5,6 +5,16 @@ from exchanges.models import Request
 from decimal import Decimal
 from odds_update.views import calculateProfit
 
+def checkIfHidden():
+	for share in InvestedShare.objects.filter(hidden=True):
+		if not share.share.hidden:
+			share.hidden = False
+			share.save()
+	for game in InvestedGame.objects.filter(hidden=True):
+		if not game.game.hidden:
+			game.hidden = False
+			game.save()
+
 def checkRequests():
 	for req in Request.objects.all():
 		if req.inv_share.hidden:
@@ -50,6 +60,7 @@ def home_view(request):
 	return render(request, 'index.html', context)
 
 def my_shares_view(request):
+	checkIfHidden()
 	checkRequests()
 	if not request.user.is_anonymous:
 		calculateProfit(request.user)
