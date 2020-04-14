@@ -1,16 +1,17 @@
 from django.conf import settings
 from django.db import models
+from decimal import Decimal
 
 # Create your models here.
 class Share(models.Model):
-    name = models.CharField(max_length=100)
-    seed = models.IntegerField()
-    initialAmount = models.IntegerField(default=50)
-    americanOdds = models.IntegerField()
-    pricePerShare = models.CharField(max_length=100, blank=True, editable=False)
-    hidden = models.BooleanField(default=False)
-    done = models.BooleanField(default=False)
-    win = models.BooleanField(default=False)
+    name = models.CharField("Name", max_length=100)
+    seed = models.IntegerField("Seed")
+    initialAmount = models.IntegerField("Amount of Available Shares", default=50)
+    americanOdds = models.IntegerField("Odds")
+    pricePerShare = models.CharField("Price/Share", max_length=100, blank=True, editable=False)
+    hidden = models.BooleanField("Hide", default=False)
+    done = models.BooleanField("Out of Tournament", default=False)
+    win = models.BooleanField("Winner", default=False)
     # moneyInvested = models.FloatField()
     # moneyToWin = models.FloatField()
 
@@ -50,28 +51,65 @@ class Share(models.Model):
         super().save(*args, **kwargs)
 
 class Game(models.Model):
-    home = models.CharField(max_length=100)
-    away = models.CharField(max_length=100)
-    homeML = models.IntegerField()
-    awayML = models.IntegerField()
-    homeSpread = models.DecimalField(max_digits=10, decimal_places=1)
-    awaySpread = models.DecimalField(max_digits=10, decimal_places=1)
-    didHomeWin = models.BooleanField(default=False)
-    didHomeSpread = models.BooleanField(default=False)
-    didAwayWin = models.BooleanField(default=False)
-    didAwaySpread = models.BooleanField(default=False)
-    # maxToRisk = models.DecimalField(max_digits=10000, decimal_places=2, blank=True)
-    maxToWin = models.DecimalField(max_digits=10000, decimal_places=2, default=100)
-    gameStarted = models.BooleanField(default=False)
-    gameOver = models.BooleanField(default=False, editable=False)
+    home = models.CharField("Home Team", max_length=100)
+    away = models.CharField("Away Team", max_length=100)
 
-    # def convertOdds(self, odds):
-    #
-    #
-    # def findMaxToRisk(self):
-    #
-    #
-    # def convertWinToRisk(self):
-    #
-    # def __str__(self):
-    #     return self.home + " vs " + self.away
+    homeML = models.IntegerField("Home Moneyline")
+    homeOdds = models.FloatField(default=0, editable=False)
+    maxToRiskHome = models.DecimalField(max_digits=10, decimal_places=2, null=True, editable=False)
+
+    awayML = models.IntegerField("Away Moneyline")
+    awayOdds = models.FloatField(default=0, editable=False)
+    maxToRiskAway = models.DecimalField(max_digits=10, decimal_places=2, null=True, editable=False)
+
+    homeSpread = models.DecimalField("Home Spread", max_digits=10, decimal_places=1)
+    awaySpread = models.DecimalField("Away Spread", max_digits=10, decimal_places=1)
+    spreadOdds = models.FloatField(default=1.91, editable=False)
+    maxToRiskSpread = models.DecimalField(max_digits=10, decimal_places=2, null=True, editable=False)
+
+    # maxToRisk = models.DecimalField(max_digits=10000, decimal_places=2, blank=True)
+    maxToWin = models.DecimalField("Max Amount to Win", max_digits=10000, decimal_places=2, default=100)
+    gameStarted = models.BooleanField("Game has Begun", default=False)
+    gameOver = models.BooleanField("Game is Over", default=False, editable=False)
+
+    didHomeWin = models.BooleanField("Home Team Won", default=False)
+    didHomeSpread = models.BooleanField("Home Covered Spread", default=False)
+    didAwayWin = models.BooleanField("Away Team Won", default=False)
+    didAwaySpread = models.BooleanField("Away Covered Spread", default=False)
+
+    def convertOdds(self, odds):
+        if odds == self.homeML:
+            if odds < 0:
+                odds = 1 - (100/odds)
+            else:
+                odds = 1 + (odds/100)
+
+        elif odds == self.awayML:
+            if odds < 0:
+                odds = 1 - (100/odds)
+            else:
+                odds = 1 + (odds/100)
+        else:
+            odds = -110
+            odds = 1 - (100/odds)
+
+        return odds
+
+    def findMaxToRisk(self, odds):
+        return round((self.maxToWin / Decimal(odds)), 2)
+
+    def __str__(self):
+        return self.home + " vs " + self.away
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if not self.homeOdds:
+            self.homeOdds = self.convertOdds(self.homeML)
+        if not self.awayOdds:
+            self.awayOdds = self.convertOdds(self.awayML)
+        if not self.maxToRiskHome:
+            self.maxToRiskHome = round(self.findMaxToRisk(self.homeOdds), 2)
+        if not self.maxToRiskAway:
+            self.maxToRiskAway = round(self.findMaxToRisk(self.awayOdds), 2)
+        if not self.maxToRiskSpread:
+            self.maxToRiskSpread = round(self.findMaxToRisk(self.spreadOdds), 2)
+        super().save(*args, **kwargs)

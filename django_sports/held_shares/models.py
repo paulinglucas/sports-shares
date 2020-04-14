@@ -19,9 +19,9 @@ class InvestedGameManager(models.Manager):
 class InvestedShare(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     share = models.ForeignKey(Share, on_delete=models.CASCADE)
-    numSharesHeld = models.IntegerField()
-    boughtAt = models.CharField(max_length=100, blank=True)
-    hidden = models.BooleanField(default=False)
+    numSharesHeld = models.IntegerField("Number of Shares Held")
+    boughtAt = models.CharField("Price Purchased", max_length=100, blank=True)
+    hidden = models.BooleanField("Hide", default=False)
 
     objects = InvestedShareManager()
 
@@ -31,12 +31,12 @@ class InvestedShare(models.Model):
 class InvestedGame(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    amountUsed = models.DecimalField(max_digits=10000, decimal_places=2)
-    amOdds = models.IntegerField()
-    oddsAtPurchase = models.FloatField()
+    amountUsed = models.DecimalField("Amount Bet", max_digits=10000, decimal_places=2)
+    amOdds = models.IntegerField("Odds")
+    oddsAtPurchase = models.FloatField("Decimal Odds")
     # 1=homeML, 2=awayML, 3=homeSpread, 4=awaySpread
-    bet = models.IntegerField()
-    hidden = models.BooleanField(default=False)
+    bet = models.IntegerField("Bet Placed")
+    hidden = models.BooleanField("Hide", default=False)
 
     objects = InvestedGameManager()
 

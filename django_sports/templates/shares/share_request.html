@@ -11,7 +11,7 @@
       <button type='submit'  style='color: white' class="btn btn-primary d-flex justify-content-center buy-btn">Take Back</button>
     </form>
     {% else %}
-    <a data-toggle="modal" href="#test{{ req.id }}" class="btn btn-primary d-flex justify-content-center buy-btn">Buy</a>
+    <a data-toggle="modal" href="#buy{{ req.id }}" class="btn btn-primary d-flex justify-content-center buy-btn">Buy</a>
     {% endif %}
     <!-- <a data-toggle="modal" href="#portfolioModal3" class="btn btn-primary d-flex justify-content-center reject-btn">Reject</a> -->
   </div>
@@ -21,7 +21,7 @@
 </div>
 
 <!-- modal of share -->
-<div class="portfolio-modal modal fade" id="test{{ req.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="buy{{ req.id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">

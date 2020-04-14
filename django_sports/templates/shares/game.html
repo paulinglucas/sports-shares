@@ -8,14 +8,14 @@
         <h4 class="card-title d-flex justify-content-center">{{ share.home }} vs {{ share.away }}</h4>
       </div>
       {% if request.user.is_authenticated %}
-      <a data-toggle="modal" href="#test{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Purchase</a>
+      <a data-toggle="modal" href="#game{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Purchase</a>
       {% endif %}
     </div>
   </div>
 </div>
 
 <!-- modal of share -->
-<div class="portfolio-modal modal fade" id="test{{ share.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="portfolio-modal modal fade" id="game{{ share.id }}" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">
@@ -37,15 +37,186 @@
                 <!-- <li>Amount to invest: 0</li>
                 <li>To Win: 0</li> -->
               </ul>
-              <form class='game-list' action='{% url "pages:game_success" %}' method='POST'>
-                {% csrf_token %}
-                <input name="share" type="hidden" value="{{ share.id }}">
-                <input class="form-control extra-bottom" type="text" name="amount" placeholder="Enter Amount to Wager">
-                <button class="btn btn-primary" name='homeML' type="submit">{{ share.home }} wins</button>
-                <button class="btn btn-primary" name='awayML' type="submit">{{ share.away }} wins</button>
-                <button class="btn btn-primary" name='homeSpread' type="submit">{{ share.home }} spread</button>
-                <button class="btn btn-primary" name='awaySpread' type="submit">{{ share.away }} spread</button>
-              </form>
+              <!-- <form class='game-list' action='{% url "pages:game_success" %}' method='POST'> -->
+              <!-- <input name="share" type="hidden" value="{{ share.id }}"> -->
+              <div class="game-list">
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" href="#game{{ share.id }}homeML">{{ share.home }} wins</button>
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" href="#game{{ share.id }}awayML">{{ share.away }} wins</button>
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" href="#game{{ share.id }}homeSpread">{{ share.home }} spread</button>
+                <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal" href="#game{{ share.id }}awaySpread">{{ share.away }} spread</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="game{{ share.id }}homeML" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class='center-text extra-bottom-min'>Risk or Win</h2>
+              <p class="item-intro text-muted"><b>Max Risk:</b> {{ share.maxToRiskHome }}</p>
+              <p class="item-intro text-muted"><b>Max Win:</b> {{ share.maxToWin }}</p>
+              <ul class="list-inline">
+              <div class='container center-text'>
+                <div class="row">
+                    <form class="text-center" action='{% url "pages:game_success" %}' method="POST">
+                      {% csrf_token %}
+                      <input class="col-sm-12 center-text form-control extra-bottom cent" type="text" name="amount" placeholder="Enter Amount to Wager">
+                      <input type='hidden' name='game_id' value='{{ share.id }}' />
+                      <input type='hidden' name='bet' value='1' />
+                      <input type='hidden' name='maxRisk' value='{{ share.maxToRiskHome }}' />
+                      <div class="col-sm-6 float-left">
+                        <button class="btn btn-primary confirm-btn float-left" name='riskOrWin' value='risk' type="submit">Risk</button>
+                      </div>
+                      <div class="col-sm-6 float-right">
+                        <button class="btn btn-primary confirm-btn float-right" name='riskOrWin' value='win' type="submit">Win</button>
+                      </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="game{{ share.id }}awayML" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class='center-text extra-bottom-min'>Risk or Win</h2>
+              <p class="item-intro text-muted"><b>Max Risk:</b> {{ share.maxToRiskAway }}</p>
+              <p class="item-intro text-muted"><b>Max Win:</b> {{ share.maxToWin }}</p>
+              <ul class="list-inline">
+              <div class='container center-text'>
+                <div class="row">
+                    <form class="text-center" action='{% url "pages:game_success" %}' method="POST">
+                      {% csrf_token %}
+                      <input class="col-sm-12 center-text form-control extra-bottom cent" type="text" name="amount" placeholder="Enter Amount to Wager">
+                      <input type='hidden' name='game_id' value='{{ share.id }}' />
+                      <input type='hidden' name='bet' value='2' />
+                      <input type='hidden' name='maxRisk' value='{{ share.maxToRiskAway }}' />
+                      <div class="col-sm-6 float-left">
+                        <button class="btn btn-primary confirm-btn float-left" name='riskOrWin' value='risk' type="submit">Risk</button>
+                      </div>
+                      <div class="col-sm-6 float-right">
+                        <button class="btn btn-primary confirm-btn float-right" name='riskOrWin' value='win' type="submit">Win</button>
+                      </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="game{{ share.id }}homeSpread" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class='center-text extra-bottom-min'>Risk or Win</h2>
+              <p class="item-intro text-muted"><b>Max Risk:</b> {{ share.maxToRiskSpread }}</p>
+              <p class="item-intro text-muted"><b>Max Win:</b> {{ share.maxToWin }}</p>
+              <ul class="list-inline">
+              <div class='container center-text'>
+                <div class="row">
+                    <form class="text-center" action='{% url "pages:game_success" %}' method="POST">
+                      {% csrf_token %}
+                      <input class="col-sm-12 center-text form-control extra-bottom cent" type="text" name="amount" placeholder="Enter Amount to Wager">
+                      <input type='hidden' name='game_id' value='{{ share.id }}' />
+                      <input type='hidden' name='bet' value='3' />
+                      <input type='hidden' name='maxRisk' value='{{ share.maxToRiskSpread }}' />
+                      <div class="col-sm-6 float-left">
+                        <button class="btn btn-primary confirm-btn float-left" name='riskOrWin' value='risk' type="submit">Risk</button>
+                      </div>
+                      <div class="col-sm-6 float-right">
+                        <button class="btn btn-primary confirm-btn float-right" name='riskOrWin' value='win' type="submit">Win</button>
+                      </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal of share -->
+<div class="portfolio-modal modal fade" id="game{{ share.id }}awaySpread" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-dismiss="modal">
+        <div class="lr">
+          <div class="rl"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <div class="modal-body parent-center">
+              <!-- Project Details Go Here -->
+              <h2 class='center-text extra-bottom-min'>Risk or Win</h2>
+              <p class="item-intro text-muted"><b>Max Risk:</b> {{ share.maxToRiskSpread }}</p>
+              <p class="item-intro text-muted"><b>Max Win:</b> {{ share.maxToWin }}</p>
+              <ul class="list-inline">
+              <div class='container center-text'>
+                <div class="row">
+                    <form class="text-center" action='{% url "pages:game_success" %}' method="POST">
+                      {% csrf_token %}
+                      <input class="col-sm-12 center-text form-control extra-bottom cent" type="text" name="amount" placeholder="Enter Amount to Wager">
+                      <input type='hidden' name='game_id' value='{{ share.id }}' />
+                      <input type='hidden' name='bet' value='4' />
+                      <input type='hidden' name='maxRisk' value='{{ share.maxToRiskSpread }}' />
+                      <div class="col-sm-6 float-left">
+                        <button class="btn btn-primary confirm-btn float-left" name='riskOrWin' value='risk' type="submit">Risk</button>
+                      </div>
+                      <div class="col-sm-6 float-right">
+                        <button class="btn btn-primary confirm-btn float-right" name='riskOrWin' value='win' type="submit">Win</button>
+                      </div>
+                    </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>

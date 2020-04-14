@@ -52,10 +52,10 @@ def home_view(request):
 def my_shares_view(request):
 	checkRequests()
 	if not request.user.is_anonymous:
-		calculateProfit(request)
+		calculateProfit(request.user)
 		current_profit = request.user.profile.current_profit
 		shares = InvestedShare.objects.filter(user=request.user).exclude(hidden=True)
-		game_shares = InvestedGame.objects.filter(user=request.user) #.exclude(game.gameOver=True)
+		game_shares = InvestedGame.objects.filter(user=request.user).exclude(hidden=True)
 		my_requests = Request.objects.exclude(sender=request.user.profile).exclude(hidden=True)
 		my_sells = Request.objects.filter(sender=request.user.profile).exclude(hidden=True)
 

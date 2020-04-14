@@ -157,3 +157,7 @@ footer {
 .game-list button {
   margin: 10px;
 }
+
+.extra-bottom-min {
+  margin-bottom: 10px;
+}

@@ -26,47 +26,50 @@ def add_share_to_investments_view(request):
 
 def game_success_view(request):
     if request.method == 'POST':
-        id = request.POST.get('share')
-        share = Game.objects.get(id=id)
-        amount = Decimal(request.POST.get('amount'))
-        odds = None
-        amOdds = None
-        data = request.POST.copy()
-        bet = 0
-        if 'homeML' in data:
-            bet = 1
-            amOdds = share.homeML
-            if amOdds < 0:
-                odds = 1 - (100/amOdds)
-            else:
-                odds = 1 + (amOdds/100)
+        id = request.POST.get('game_id')
+        amount = float(request.POST.get('amount'))
+        game = Game.objects.get(id=id)
+        bet = request.POST.get('bet')
 
-        elif 'awayML' in data:
-            bet = 2
-            amOdds = share.awayML
-            if amOdds < 0:
-                odds = 1 - (100/amOdds)
-            else:
-                odds = 1 + (amOdds/100)
+        amOdds = 0
+        odds = 0
+        if bet == '1':
+            amOdds = game.homeML
+            odds = game.homeOdds
+        elif bet == '2':
+            amOdds = game.awayML
+            odds = game.awayOdds
         else:
             amOdds = -110
-            odds = 1 - (100/amOdds)
-            if 'homeSpread' in data:
-                bet = 3
-            else:
-                bet = 4
+            odds = game.spreadOdds
 
-        inv_share = InvestedGame.objects.createInvestment(
-            request.user,
-            share,
-            amount,
-            amOdds,
-            odds,
-            bet
-        )
+        riskOrWin = request.POST.get('riskOrWin')
+        if riskOrWin == 'risk':
+            if amount > float(request.POST.get('maxRisk')):
+                return redirect('/games/')
 
-        # request.user.profile.current_profit -= Decimal(amount)
-        # request.user.profile.save()
+            inv_share = InvestedGame.objects.createInvestment(
+                request.user,
+                game,
+                round(amount, 2),
+                amOdds,
+                odds,
+                int(bet)
+            )
+        elif riskOrWin == 'win':
+            if amount > game.maxToWin:
+                return redirect('/games/')
+
+            amount = (amount / (odds-1))
+
+            inv_share = InvestedGame.objects.createInvestment(
+                request.user,
+                game,
+                round(amount, 2),
+                amOdds,
+                odds,
+                int(bet)
+            )
 
         context = {}
         return render(request, 'success/game_success.html', context)
