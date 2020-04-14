@@ -11,7 +11,7 @@ def checkIfHidden():
 			share.hidden = False
 			share.save()
 	for game in InvestedGame.objects.filter(hidden=True):
-		if not game.game.hidden:
+		if not game.game.gameOver:
 			game.hidden = False
 			game.save()
 
