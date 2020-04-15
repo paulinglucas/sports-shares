@@ -77,6 +77,13 @@ class Game(models.Model):
     didAwayWin = models.BooleanField("Away Team Won", default=False)
     didAwaySpread = models.BooleanField("Away Covered Spread", default=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.oldHomeML = self.homeML
+        self.oldAwayML = self.awayML
+        self.oldHomeOdds = self.homeOdds
+        self.oldAwayOdds = self.awayOdds
+
     def convertOdds(self, odds):
         if odds == self.homeML:
             if odds < 0:
@@ -104,12 +111,32 @@ class Game(models.Model):
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         if not self.homeOdds:
             self.homeOdds = self.convertOdds(self.homeML)
+        elif self.oldHomeML != self.homeML:
+            print("exxxx\n\n\n")
+            self.homeOdds = self.convertOdds(self.homeML)
+            self.oldHomeML = self.homeML
+
         if not self.awayOdds:
             self.awayOdds = self.convertOdds(self.awayML)
+        elif self.oldAwayML != self.awayML:
+            self.awayOdds = self.convertOdds(self.awayML)
+            self.oldAwayML = self.awayML
+
         if not self.maxToRiskHome:
             self.maxToRiskHome = round(self.findMaxToRisk(self.homeOdds), 2)
+        elif self.oldHomeOdds != self.homeOdds:
+            print("exxxx\n\n\n")
+            self.maxToRiskHome = round(self.findMaxToRisk(self.homeOdds), 2)
+            self.oldHomeOdds = self.homeOdds
+            self.oldMaxHome = self.maxToRiskHome
+
         if not self.maxToRiskAway:
             self.maxToRiskAway = round(self.findMaxToRisk(self.awayOdds), 2)
+        elif self.oldAwayOdds != self.awayOdds:
+            self.maxToRiskAway = round(self.findMaxToRisk(self.awayOdds), 2)
+            self.oldAwayOdds = self.awayOdds
+            self.oldMaxAway = self.maxToRiskAway
+
         if not self.maxToRiskSpread:
             self.maxToRiskSpread = round(self.findMaxToRisk(self.spreadOdds), 2)
         super().save(*args, **kwargs)
