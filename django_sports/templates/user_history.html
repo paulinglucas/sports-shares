@@ -7,6 +7,24 @@
 <div class='center-text profit parent-center'>
   <h2>Total Profit: ${{ profit }}</h2>
 </div>
+
+<div class='container'>
+<div class='row'>
+{% for person in top5 %}
+<div class='col-sm-6'>
+  <h5>{{ person.first_name }} currently has {{ person.current_profit }}</h5>
+</div>
+{% endfor %}
+{% for share, potential in shares %}
+<div class='col-sm-6'>
+  <h5>Potential winnings of {{ share.name }}: {{ potential }}</h5>
+</div>
+{% endfor %}
+</div>
+</div>
+<div class='whitespace'>
+</div>
+
 <div class='container'>
   <div class='row'>
     {% for user in users %}

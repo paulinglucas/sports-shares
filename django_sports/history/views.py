@@ -3,6 +3,14 @@ from held_shares.models import InvestedGame, InvestedShare
 from odds_update.views import calculateProfit
 from exchanges.models import Request
 from django.contrib.auth.models import User
+from shares.models import Share, Game
+from login.models import Profile
+
+def findPotentialWinnings(share):
+    winnings = 0
+    for vested_share in InvestedShare.objects.filter(share=share):
+        winnings += vested_share.numSharesHeld*10
+    return winnings
 
 # Create your views here.
 def getUserHistory(user):
@@ -47,9 +55,25 @@ def user_history_view(request):
     profit = 0
     for user in User.objects.all():
         profit -= user.profile.current_profit
+
+    shares = []
+    for s in Share.objects.filter(done=False):
+        shares.append((s, findPotentialWinnings(s)))
+    shares.sort(key = lambda x: x[1])
+    shares.reverse()
+    print(shares)
+    if len(shares) >= 5:
+        shares = shares[:5]
+    else:
+        shares = shares[:len(shares)]
+
+    top5users = Profile.objects.order_by('-current_profit')[:5]
+
     context = {
         'users': User.objects.all(),
-        'profit': profit
+        'profit': profit,
+        'shares': shares,
+        'top5': top5users
     }
     return render(request, 'user_history.html', context)
 
