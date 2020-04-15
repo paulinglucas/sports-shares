@@ -24,7 +24,7 @@ class InvestedShare(models.Model):
     numSharesHeld = models.IntegerField("Number of Shares Held")
     boughtAt = models.CharField("Price Purchased", max_length=100, blank=True)
     hidden = models.BooleanField("Hide", default=False)
-    created = models.DateTimeField(default=now)
+    created = models.DateTimeField(default=now, null=True)
 
     objects = InvestedShareManager()
 
@@ -40,7 +40,7 @@ class InvestedGame(models.Model):
     # 1=homeML, 2=awayML, 3=homeSpread, 4=awaySpread
     bet = models.IntegerField("Bet Placed")
     hidden = models.BooleanField("Hide", default=False)
-    created = models.DateTimeField(default=now)
+    created = models.DateTimeField(default=now, null=True)
 
     objects = InvestedGameManager()
 
