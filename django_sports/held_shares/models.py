@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from shares.models import Share, Game
+import datetime
+from django.utils.timezone import now
 
 class InvestedShareManager(models.Manager):
     def createInvestment(self, user, share, numSharesHeld, boughtAt):
@@ -22,6 +24,7 @@ class InvestedShare(models.Model):
     numSharesHeld = models.IntegerField("Number of Shares Held")
     boughtAt = models.CharField("Price Purchased", max_length=100, blank=True)
     hidden = models.BooleanField("Hide", default=False)
+    created = models.DateTimeField(default=now)
 
     objects = InvestedShareManager()
 
@@ -37,6 +40,7 @@ class InvestedGame(models.Model):
     # 1=homeML, 2=awayML, 3=homeSpread, 4=awaySpread
     bet = models.IntegerField("Bet Placed")
     hidden = models.BooleanField("Hide", default=False)
+    created = models.DateTimeField(default=now)
 
     objects = InvestedGameManager()
 
