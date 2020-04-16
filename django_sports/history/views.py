@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from held_shares.models import InvestedGame, InvestedShare
-from odds_update.views import calculateProfit
+from odds_update.views import calculateProfit, calculateTotalShareProfit
 from exchanges.models import Request
 from django.contrib.auth.models import User
 from shares.models import Share, Game
@@ -61,11 +61,12 @@ def user_history_view(request):
         shares.append((s, findPotentialWinnings(s)))
     shares.sort(key = lambda x: x[1])
     shares.reverse()
-    print(shares)
     if len(shares) >= 5:
         shares = shares[:5]
     else:
         shares = shares[:len(shares)]
+
+    shareProfit = calculateTotalShareProfit()
 
     top5users = Profile.objects.order_by('-current_profit')[:5]
 
@@ -73,7 +74,8 @@ def user_history_view(request):
         'users': User.objects.all(),
         'profit': profit,
         'shares': shares,
-        'top5': top5users
+        'top5': top5users,
+        'shareProfit': shareProfit
     }
     return render(request, 'user_history.html', context)
 

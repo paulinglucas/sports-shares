@@ -36,3 +36,9 @@ def calculateProfit(user):
     user.profile.current_profit = profit
     user.profile.save()
     return profit
+
+def calculateTotalShareProfit():
+    profit = 0
+    for share in InvestedShare.objects.all():
+        profit += share.numSharesHeld*float(share.boughtAt)
+    return profit
