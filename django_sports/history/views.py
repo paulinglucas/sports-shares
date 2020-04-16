@@ -66,7 +66,7 @@ def user_history_view(request):
     else:
         shares = shares[:len(shares)]
 
-    shareProfit = calculateTotalShareProfit()
+    shareProfit = round(calculateTotalShareProfit(), 2)
 
     top5users = Profile.objects.order_by('-current_profit')[:5]
 
