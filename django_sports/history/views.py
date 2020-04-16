@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from shares.models import Share, Game
 from login.models import Profile
 
+def calculateAllProfits():
+	for user in User.objects.all():
+		calculateProfit(user)
+
 def findPotentialWinnings(share):
     winnings = 0
     for vested_share in InvestedShare.objects.filter(share=share):
@@ -52,6 +56,7 @@ def getUserHistory(user):
     return context
 
 def user_history_view(request):
+    calculateAllProfits()
     profit = 0
     for user in User.objects.all():
         profit -= user.profile.current_profit
