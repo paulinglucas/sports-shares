@@ -225,7 +225,7 @@ def update_sale_signal(sender, instance, created, **kwargs):
             sale.inv_share.save()
             sale.numShares = instance.initialAmount
 
-            if sale.salePrice != instance.recommendedPrice:
+            if sale.salePrice < instance.recommendedPrice:
                 sale.salePrice = instance.recommendedPrice
             sale.save()
         except PendingSale.DoesNotExist:
