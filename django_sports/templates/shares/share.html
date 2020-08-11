@@ -6,9 +6,9 @@
     </div>
     <div class="card-body">
       <h4 class="card-title d-flex justify-content-center">{{ share.name }}</h4>
-      <h6 class="d-flex justify-content-center extra-margin">{{ share.pricePerShare }} / share</h6>
-      <h6 class="d-flex justify-content-center extra-margin">{{ share.initialAmount }} Shares Left</h6>
-      {% if request.user.is_authenticated and share.initialAmount > 0 %}
+      <h6 class="d-flex justify-content-center extra-margin">${{ share.recommendedPrice }} / share</h6>
+      <h6 class="d-flex justify-content-center extra-margin">{{ share.amount }} Shares Left</h6>
+      {% if request.user.is_authenticated and share.amount > 0 %}
       <a data-toggle="modal" href="#test{{ share.id }}" class="btn btn-primary d-flex justify-content-center">Invest</a>
       {% endif %}
     </div>
@@ -29,18 +29,26 @@
           <div class="col-lg-8 mx-auto">
             <div class="modal-body parent-center">
               <!-- Project Details Go Here -->
-              <h2 class="text-uppercase center-text">{{ share.name }}</h2>
-              <p class="item-intro text-muted">To win the NBA 2k20 Tournament</p>
+              <h2 class="text-uppercase center-text" style="margin-bottom:10px">{{ share.name }}</h2>
               <ul class="list-inline">
-                <li>{{ share.initialAmount }} Shares Left</li>
-                <li>Odds {{ share.convertOddsToStr }}</li>
+                <li>{{ share.amount }} Shares Left</li>
+                <li>{{ share.convertOddsToStr }}</li>
                 <li>Each winning share earns $10</li>
+
+                <br>
+
+                <li>Buy at ${{ share.recommendedPrice }} / share</li>
+                {% for price, num in prices %}
+                <li>{{num}} shares selling for ${{price}}</li>
+                {% endfor %}
                 <!-- <li>Amount to invest: 0</li>
                 <li>To Win: 0</li> -->
               </ul>
               <form action='{% url "pages:invest_success" %}' method='POST'>
                 {% csrf_token %}
                 <input name="share" type="hidden" value="{{ share.id }}">
+                <input name="prices" type="hidden" value="{{ prices }}">
+                <input class="form-control extra-bottom" type="text" name="price" placeholder="Enter highest price to purchase at">
                 <input class="form-control extra-bottom" type="text" name="num_shares" placeholder="Enter # of Shares">
                 <button class="btn btn-primary" type="submit">Purchase Shares</button>
               </form>

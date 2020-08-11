@@ -1,14 +1,14 @@
 from django.conf import settings
 from django.db import models
+from login.models import Profile
 from django.contrib.auth.models import User
-from shares.models import Share, Game
 import datetime
 from django.utils.timezone import now
 
 class InvestedShareManager(models.Manager):
-    def createInvestment(self, user, share, numSharesHeld, boughtAt):
+    def createInvestment(self, user, share, numSharesHeld):
         share = self.create(user=user, share=share,
-            numSharesHeld=numSharesHeld, boughtAt=boughtAt)
+            numSharesHeld=numSharesHeld)
         return share
 
 class InvestedGameManager(models.Manager):
@@ -19,21 +19,28 @@ class InvestedGameManager(models.Manager):
 
 # Create your models here.
 class InvestedShare(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    share = models.ForeignKey(Share, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    share = models.ForeignKey('shares.Share', on_delete=models.CASCADE)
     numSharesHeld = models.IntegerField("Number of Shares Held")
-    boughtAt = models.CharField("Price Purchased", max_length=100, blank=True)
     hidden = models.BooleanField("Hide", default=False)
     created = models.DateTimeField(default=now, null=True)
 
     objects = InvestedShareManager()
 
+    def total_won(self):
+        if self.share.win:
+            return "$" + str(round(numSharesHeld*10, 2))
+        elif self.share.done:
+            return "$0.00"
+        else:
+            return "Ongoing"
+
     def __str__(self):
-        return self.user.profile.first_name + " holds " + str(self.numSharesHeld) + " shares in " + self.share.name
+        return self.user.first_name + " holds " + str(self.numSharesHeld) + " shares in " + self.share.name
 
 class InvestedGame(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey('shares.Game', on_delete=models.CASCADE)
     amountUsed = models.DecimalField("Amount Bet", max_digits=10000, decimal_places=2)
     amOdds = models.IntegerField("Odds")
     oddsAtPurchase = models.FloatField("Decimal Odds")

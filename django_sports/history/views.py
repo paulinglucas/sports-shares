@@ -7,12 +7,12 @@ from shares.models import Share, Game
 from login.models import Profile
 
 def calculateAllProfits():
-	for user in User.objects.all():
-		calculateProfit(user)
+    for user in Profile.objects.all().exclude(username='BallStreet'):
+        calculateProfit(user)
 
 def findPotentialWinnings(share):
     winnings = 0
-    for vested_share in InvestedShare.objects.filter(share=share):
+    for vested_share in InvestedShare.objects.filter(share=share).exclude(user__username='BallStreet'):
         winnings += vested_share.numSharesHeld*10
     return winnings
 
@@ -25,13 +25,17 @@ def getUserHistory(user):
     sell_requests = Request.objects.filter(sender=user.profile)
     buy_requests = Request.objects.filter(receiver=user.profile)
 
-    # shares pending
-    shares_pending = inv_shares.filter(hidden=False)
-    context['shares_pending'] = shares_pending
-
     # games pending
     games_pending = inv_games.filter(hidden=False)
     context['games_pending'] = games_pending
+
+    # games done
+    games_over = inv_games.filter(hidden=True)
+    context['games_over'] = games_over
+
+    # shares pending
+    shares_pending = inv_shares.filter(hidden=False)
+    context['shares_pending'] = shares_pending
 
     # sell requests pending
     sales_pending = sell_requests.filter(hidden=False)
@@ -48,10 +52,6 @@ def getUserHistory(user):
     # shares done
     shares_done = inv_shares.filter(hidden=True)
     context['shares_done'] = shares_done
-
-    # games done
-    games_over = inv_games.filter(hidden=True)
-    context['games_over'] = games_over
 
     return context
 

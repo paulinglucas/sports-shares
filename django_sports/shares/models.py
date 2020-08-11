@@ -1,19 +1,45 @@
 from django.conf import settings
 from django.db import models
 from decimal import Decimal
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.db.models.signals import pre_delete
+from django.db.models.signals import post_delete
+from exchanges.models import PendingSale
+from django.utils.timezone import now
+from login.models import Profile
+from held_shares.models import InvestedShare
+from django.db.models import Min
+
+# category
+class Category(models.Model):
+    name = models.CharField("Name", max_length=100)
+
+    def __str__(self):
+        return self.name
+
+# futures contract
+class Event(models.Model):
+    name = models.CharField("Event Name", max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+    done = models.BooleanField("Outcome decided", default=False)
+
+    def __str__(self):
+        return self.name
 
 # Create your models here.
 class Share(models.Model):
     name = models.CharField("Name", max_length=100)
-    seed = models.IntegerField("Seed")
-    initialAmount = models.IntegerField("Amount of Available Shares", default=50)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True)
+    initialAmount = models.IntegerField("Amount of Initial Shares", default=50)
+    tradedAmount = models.IntegerField("Amount being traded", editable=False, default=0)
     americanOdds = models.IntegerField("Odds")
-    pricePerShare = models.CharField("Price/Share", max_length=100, blank=True, editable=False)
+    recommendedPrice = models.CharField("Price/Share", max_length=100, blank=True, editable=False)
+    lastSoldPrice = models.CharField("Last Sold at", max_length=100, blank=True, editable=False, default="0.00")
     hidden = models.BooleanField("Hide", default=False)
-    done = models.BooleanField("Out of Tournament", default=False)
+    done = models.BooleanField("No longer viable", default=False)
     win = models.BooleanField("Winner", default=False)
-    # moneyInvested = models.FloatField()
-    # moneyToWin = models.FloatField()
+    created = models.DateTimeField(default=now, null=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -21,6 +47,9 @@ class Share(models.Model):
 
     def __str__(self):
         return self.name
+
+    def amount(self):
+        return self.initialAmount + self.tradedAmount
 
     def convertOddsToStr(self):
         if self.americanOdds > 0:
@@ -33,21 +62,31 @@ class Share(models.Model):
     def getPPS(self, odds):
         if odds > 0:
             pps = (100 / (odds + 100))*10
-            return str(round(pps, 2))
+            return "{:.2f}".format(round(pps, 2))
         elif odds < 0:
             pps = (-1*odds / (-1*odds + 100))*10
-            return str(round(pps, 2))
+            return "{:.2f}".format(round(pps, 2))
         else:
             return "5.00"
 
+    def getOdds(self, pps):
+        pps = float(pps) * 10
+        if pps > 50:
+            return (pps / (1 - (pps/100))) * -1
+        if pps == 50:
+            return 100
+        else:
+            return (100 / (pps / 100)) - 100
+
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.done:
+        if self.done or self.win:
             self.hidden = True
-        if not self.pricePerShare:
-            self.pricePerShare = self.getPPS(self.americanOdds)
+        if not self.recommendedPrice:
+            self.recommendedPrice = self.getPPS(self.americanOdds)
         if self.oldOdds != self.americanOdds:
-            self.pricePerShare = self.getPPS(self.americanOdds)
-        self.oldOdds = self.americanOdds
+            self.recommendedPrice = self.getPPS(self.americanOdds)
+            self.oldOdds = self.americanOdds
+            self.save()
         super().save(*args, **kwargs)
 
 class Game(models.Model):
@@ -125,7 +164,6 @@ class Game(models.Model):
         if not self.maxToRiskHome:
             self.maxToRiskHome = round(self.findMaxToRisk(self.homeOdds), 2)
         elif self.oldHomeOdds != self.homeOdds:
-            print("exxxx\n\n\n")
             self.maxToRiskHome = round(self.findMaxToRisk(self.homeOdds), 2)
             self.oldHomeOdds = self.homeOdds
             self.oldMaxHome = self.maxToRiskHome
@@ -140,3 +178,110 @@ class Game(models.Model):
         if not self.maxToRiskSpread:
             self.maxToRiskSpread = round(self.findMaxToRisk(self.spreadOdds), 2)
         super().save(*args, **kwargs)
+
+@receiver(post_save, sender=PendingSale)
+def update_share_signal(sender, instance, created, **kwargs):
+    if created and instance.seller.user.username != 'BallStreet':
+        share = Share.objects.get(id=instance.inv_share.share.id)
+        share.tradedAmount += instance.numShares
+        instance.inv_share.numSharesHeld -= instance.numShares
+        instance.inv_share.save()
+        sales = PendingSale.objects.all()
+        lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
+        share.americanOdds = share.getOdds(lowest_sale)
+        share.save()
+
+@receiver(pre_delete, sender=PendingSale)
+def update_inv_share_signal(sender, instance, **kwargs):
+    instance.inv_share.numSharesHeld += instance.numShares
+    instance.inv_share.save()
+
+@receiver(post_delete, sender=PendingSale)
+def update_price(sender, instance, **kwargs):
+    sales = PendingSale.objects.all()
+    lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
+    share.americanOdds = share.getOdds(lowest_sale)
+    share.save()
+
+@receiver(post_save, sender='shares.Share')
+def update_sale_signal(sender, instance, created, **kwargs):
+    if created:
+        site_user = Profile.objects.get(user__username='BallStreet')
+        inv_share = InvestedShare.objects.createInvestment(
+            user=site_user,
+            share=instance,
+            numSharesHeld=instance.initialAmount,
+        )
+        PendingSale.objects.create(
+            seller=site_user,
+            salePrice=instance.recommendedPrice,
+            inv_share=inv_share,
+            numShares=instance.initialAmount
+        )
+    else:
+        try:
+            sale = PendingSale.objects.filter(inv_share__share__id=instance.id).get(seller__username='BallStreet')
+            sale.inv_share.numSharesHeld = instance.initialAmount
+            sale.inv_share.save()
+            sale.numShares = instance.initialAmount
+
+            if sale.salePrice != instance.recommendedPrice:
+                sale.salePrice = instance.recommendedPrice
+            sale.save()
+        except PendingSale.DoesNotExist:
+            pass
+
+        if instance.done == True or instance.win == True:
+
+            for share in InvestedShare.objects.filter(share=instance):
+                share.hidden = True
+                share.save()
+
+            for req in PendingSale.objects.filter(inv_share__share=instance):
+                req.delete()
+
+        if not instance.hidden:
+            for share in InvestedShare.objects.filter(share=instance):
+                if share.numSharesHeld > 0:
+                    share.hidden = False
+                    share.save()
+
+            for req in PendingSale.objects.filter(inv_share__share=instance):
+                req.hidden = False
+                req.save()
+
+@receiver(post_save, sender='exchanges.Request')
+def update_share_signal2(sender, instance, created, **kwargs):
+    share = Share.objects.get(id=instance.inv_share.share.id)
+    if created:
+        if instance.sender.user.username != 'BallStreet':
+            share = Share.objects.get(id=instance.inv_share.share.id)
+            share.tradedAmount -= instance.numShares
+
+        elif instance.sender.user.username == 'BallStreet':
+            share.initialAmount -= instance.numShares
+
+        seller_share = InvestedShare.objects.filter(share__id=instance.inv_share.share.id).get(user=instance.sender)
+
+        try:
+            buyer_share = InvestedShare.objects.filter(share__id=instance.inv_share.share.id).get(user=instance.receiver)
+            buyer_share.numSharesHeld += instance.numShares
+            buyer_share.save()
+        except InvestedShare.DoesNotExist:
+            buyer_share = InvestedShare.objects.createInvestment(
+                instance.receiver,
+                instance.inv_share.share,
+                instance.numShares
+            )
+
+        seller_share.numSharesHeld -= instance.numShares
+        if seller_share.numSharesHeld == 0:
+            seller_share.hidden = True
+            seller_share.save()
+        elif seller_share.numSharesHeld > 0:
+            seller_share.save()
+        else:
+            raise Exception
+
+        share.lastSoldPrice = str(instance.salePrice)
+        share.save()

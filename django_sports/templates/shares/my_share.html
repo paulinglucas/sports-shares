@@ -1,8 +1,8 @@
 <div class="row nav-whitespace d-block">
   <h4 class="mb-0 share-title">{{ my_share.share.name }}</h4>
   <p class='share-element'># Shares Held: {{ my_share.numSharesHeld }}</p>
-  <p class='share-element'>Bought At: {{ my_share.boughtAt }}</p>
-  <p class='share-element'>Current Price:  {{ my_share.share.pricePerShare }}</p>
+  <p class='share-element'>Selling At: ${{ my_share.share.recommendedPrice }}</p>
+  <p class='share-element'>Last Sold: ${{ my_share.share.lastSoldPrice }}</p>
   <a data-toggle="modal" href="#sell{{ my_share.id }}" class="btn btn-primary d-flex justify-content-center sell-btn">Sell</a>
 
   <div class='share-breakline'></div>
@@ -24,12 +24,12 @@
             <div class="modal-body parent-center">
               <!-- Project Details Go Here -->
               <h2 class="text-uppercase center-text">{{ my_share.share.name }}</h2>
-              <p class="item-intro text-muted">Share Price: {{ my_share.share.pricePerShare }}</p>
+              <p class="item-intro text-muted">Recommended Sell Price: {{ my_share.share.recommendedPrice }}</p>
               <ul class="list-inline">
               <form action='{% url "pages:sell_request" %}' method="POST">
                 {% csrf_token %}
                 <input class="form-control extra-bottom" type="hidden" name='id' value="{{ my_share.id }}">
-                <!-- <input class="form-control extra-bottom" type="text" name='username' placeholder="Enter Username of Potential Buyer"> -->
+                <input class="form-control extra-bottom" type="text" name='price' placeholder="Enter Selling Price">
                 <input class="form-control extra-bottom" type="text" name='numShares' placeholder="Enter # Shares to Sell">
                 <button class="btn btn-primary" type="submit">Send Sell Request</button>
               </form>

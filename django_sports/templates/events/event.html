@@ -1,0 +1,13 @@
+<!-- card of share -->
+<div class="col-md-3 mx-auto">
+  <div class="card bet-display col-md-12">
+    <div class="card-body text-center">
+      <h4 class="card-title d-flex justify-content-center">{{ share.name }}</h4>
+      <form action='{% url "pages:event_specified" sport=sport id=share.id %}' method='GET'>
+        {% csrf_token %}
+        <input type='hidden' name='share_id' value='{{ share.id }}' />
+        <button type='submit'  style='color: white' class="btn btn-primary">Invest</button>
+      </form>
+    </div>
+  </div>
+</div>

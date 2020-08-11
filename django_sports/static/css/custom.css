@@ -36,6 +36,13 @@ body {
   color: red;
 }
 
+/* user page */
+
+.history-link {
+  padding: 12px;
+  border-radius: 5%;
+}
+
 /* bets */
 
 .bet-display {
@@ -87,10 +94,14 @@ body {
 }
 
 .whitespace {
-  height: 3rem;
+  height: 4rem;
 }
 
 /* shares */
+
+.bet-display {
+  padding: 1rem;
+}
 
 .shares-header {
   margin-bottom: 40px;

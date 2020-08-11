@@ -2,46 +2,41 @@
 
 {% block content %}
 
-<div class="nav-whitespace">
-</div>
-
 <div class="container">
   <div class="row profit">
-    <h4>Current profit: ${{ profit }}</h4>
+    <div class="col-sm-4 account-info">
+      <h4>Name: {{ user.first_name }} {{ user.last_name }}</h4>
+      <br>
+      <h4>Current profit: ${{ profit }}</h4>
+      <div class='nav-whitespace'>
+        <a class='btn-primary history-link' href="{% url 'pages:personal_history_view' %}">My History</a>
+      </div>
+    </div>
+
   </div>
 
   <div class="row align-items-center">
-    <div class="col-sm-6 shares-header">
+
+
+    <div class="col-sm-4 shares-header">
     <h1 class="shares-header mb-0">My Shares</h1>
+    {% for share in my_shares %}
+      {% include 'shares/my_share.html' with my_share=share %}
+    {% endfor %}
+    {% for game in game_shares %}
+      {% include 'shares/my_game.html' with my_share=game %}
+    {% endfor %}
     </div>
 
-    <div class="col-sm-6 shares-header">
-    <h1 class="shares-header mb-0">Buy Requests</h1>
+    <div class="col-sm-4 shares-header">
+    <h1 class="shares-header mb-0">Pending Sales</h1>
+
+    {% for req in my_sells %}
+      {% include 'shares/share_request.html' with req=req %}
+    {% endfor %}
     </div>
 
   </div>
-
-  <div class="row">
-    <div class="col-sm-6 invested-shares">
-      {% for game in game_shares %}
-        {% include 'shares/my_game.html' with my_share=game %}
-      {% endfor %}
-      {% for share in my_shares %}
-        {% include 'shares/my_share.html' with my_share=share %}
-      {% endfor %}
-    </div>
-
-    <div class="col-sm-6 buy-requests">
-      {% for req in my_sells %}
-        {% include 'shares/share_request.html' with req=req %}
-      {% endfor %}
-      {% for req in my_requests %}
-        {% include 'shares/share_request.html' with req=req %}
-      {% endfor %}
-    </div>
-  </div>
-
-
 </div>
 
 {% endblock %}

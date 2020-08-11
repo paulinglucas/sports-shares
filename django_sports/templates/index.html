@@ -5,28 +5,15 @@
   <header class="masthead text-center text-white">
     <div class="masthead-content">
       <div class="container">
-        <h1 class="masthead-heading mb-0">NBA 2k20 Tournament</h1>
-        <h2 class="masthead-subheading mb-0">Scroll Below to Invest in the Best</h2>
-        <div class="dropdown show">
-          <a class="btn btn-primary btn-xl rounded-pill mt-5 dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Show me the seeds!
-          </a>
-          <a class="btn btn-primary btn-xl rounded-pill mt-5" style='margin-left: 20px' href="https://challonge.com/users/nellyis2cool/tournaments" role="button">2k Bracket</a>
-
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#test-1-seeds">Seeds 1-2</a>
-          <a class="dropdown-item" href="#test-3-seeds">Seeds 3-4</a>
-          <a class="dropdown-item" href="#test-5-seeds">Seeds 5-6</a>
-          <a class="dropdown-item" href="#test-7-seeds">Seeds 7-8</a>
-          <a class="dropdown-item" href="#test-9-seeds">Seeds 9-10</a>
-        </div>
+        <h1 class="masthead-heading mb-0">SportsBroker</h1>
+        <h2 class="masthead-subheading mb-0">Where it's Always a Bull Market</h2>
+        <div class="">
+          <a class="btn btn-primary btn-xl rounded-pill mt-5" href="{% url 'pages:events' 'Football' %}" role="button">Football</a>
+          <a class="btn btn-primary btn-xl rounded-pill mt-5" style='margin-left: 20px' href="#" role="button">Baseball</a>
+          <a class="btn btn-primary btn-xl rounded-pill mt-5" style='margin-left: 20px' href="#" role="button">Basketball</a>
       </div>
       </div>
     </div>
   </header>
-
-  {% for seed, shares in seeds %}
-    {% include 'shares/seed.html' with shares=shares seed=seed %}
-  {% endfor %}
 
 {% endblock %}

@@ -2,9 +2,6 @@
 
 {% block content %}
 
-<div class="nav-whitespace">
-</div>
-
 <div class='container'>
 <div class="row profit">
   <h4>Current profit: ${{ profit }}</h4>
@@ -16,7 +13,7 @@
     <div class='row'>
     {% for share in shares_pending %}
       <div class ='col-sm-12'>
-        <p><b>{{ share.share.name }}</b>: Bought at {{ share.boughtAt }}, # Shares: {{ share.numSharesHeld }}</p>
+        <p><b>{{ share.share.name }}</b>: # Shares: {{ share.numSharesHeld }}</p>
         <br>
       </div>
     {% endfor %}
@@ -41,7 +38,7 @@
     <div class='row'>
     {% for share in sales_pending %}
       <div class ='col-sm-12'>
-        <p><b>{{ share }}</b>: Bought at {{ share.inv_share.boughtAt }}, Current Price: {{ share.inv_share.share.pricePerShare }}, # Shares: {{ share.numShares }}</p>
+        <p><b>{{ share }}</b>: Current Price: {{ share.inv_share.share.pricePerShare }}, # Shares: {{ share.numShares }}</p>
         <br>
       </div>
     {% endfor %}
@@ -53,7 +50,7 @@
     <div class='row'>
     {% for sale in sales %}
       <div class ='col-sm-12'>
-        <p><b>{{ sale }}</b>: Bought at {{ sale.inv_share.boughtAt }}, Sold at: {{ sale.salePrice }}, # Shares: {{ share.numShares }}</p>
+        <p><b>{{ sale }}</b>: Sold at: {{ sale.salePrice }}, # Shares: {{ share.numShares }}</p>
         <br>
       </div>
     {% endfor %}
@@ -77,7 +74,7 @@
     <div class='row'>
     {% for share in shares_done %}
       <div class ='col-sm-12'>
-        <p><b>{{ share.share.name }}</b>: Bought at {{ share.boughtAt }}, # Shares: {{ share.numSharesHeld }}</p>
+        <p><b>{{ share.share.name }}</b>: # Shares: {{ share.numSharesHeld }}</p>
         <br>
       </div>
     {% endfor %}

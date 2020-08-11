@@ -1,0 +1,10 @@
+SITE SUPERUSER: BallStreet
+
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc"  -delete
+
+TODO:
+  figure out how to update initial amount of shares
+    - easy, make signal somewhere
+
+  further bug testing, this is all kinds of fucked up rn

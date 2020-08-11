@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row profit">
+    <div class="col-sm-4 account-info">
+      <h4>Name: {{ user.first_name }} {{ user.last_name }}</h4>
+      <br>
+      <h4>Current profit: ${{ profit }}</h4>
+    </div>
+
+  </div>
+
+  <div class="row align-items-center">
+
+
+    <div class="col-sm-4 shares-header">
+    <h1 class="shares-header mb-0">Sold Shares</h1>
+
+    {% for sale in sales %}
+      {% include 'shares/transactions/sale.html' with sale=sale %}
+    {% endfor %}
+    </div>
+
+    <div class="col-sm-4 shares-header">
+    <h1 class="shares-header mb-0">Purchased Shares</h1>
+
+    {% for buy in buys %}
+      {% include 'shares/transactions/buy.html' with buy=buy %}
+    {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

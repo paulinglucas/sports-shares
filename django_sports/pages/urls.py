@@ -11,7 +11,6 @@ urlpatterns = [
 	# main pages
 	path('', views.home_view, name='homepage'),
 	path('my_shares/', views.my_shares_view, name='my_shares'),
-	path('games/', views.games_view, name='games'),
 	# login views
 	path('login/', login_views.login_view, name="login"),
 	path('login_success/', login_views.login_success_view, name="login_success"),
@@ -19,13 +18,19 @@ urlpatterns = [
 	path('logout_success/', login_views.logout_success_view, name="logout_success"),
 	# successfully invested / requested shares
 	path('invest_success/', invest_views.add_share_to_investments_view, name="invest_success"),
-	path('game_success/', invest_views.game_success_view, name="game_success"),
 	path('sent_success/', exchange_views.send_sell_request, name="sell_request"),
 	# buy request response options
 	path('my_shares/reject', exchange_views.reject_request, name='reject_request'),
-	path('my_shares/accept', exchange_views.accept_request, name='accept_request'),
 	# user history
 	path('user_history/', history_views.user_history_view, name='user_history'),
-	path('user_history/user/', history_views.user_view, name='user_view')
+	path('user_history/user/', history_views.user_view, name='user_view'),
+	path('my_shares/my_history/', views.user_history_view, name='personal_history_view'),
+	# events
+	path('events/<slug:sport>/', views.events_view, name='events'),
+	path('events/<slug:sport>/event-<int:id>', views.event_view, name='event_specified'),
+	# games
+	path('games/', views.games_view, name='games'),
+	path('game_success/', invest_views.game_success_view, name="game_success"),
+	
 
 ]

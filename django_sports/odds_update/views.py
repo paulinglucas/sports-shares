@@ -6,15 +6,20 @@ from decimal import Decimal
 # Create your views here.
 def calculateProfit(user):
     held_shares = InvestedShare.objects.filter(user=user)
-    held_games = InvestedGame.objects.filter(user=user)
-    soldExchanges = Request.objects.filter(sender=user.profile).filter(hidden=True).exclude(salePrice=-1.00)
+    soldExchanges = Request.objects.filter(sender=user).exclude(salePrice=-1.00)
+    boughtExchanges = Request.objects.filter(receiver=user).exclude(salePrice=-1.00)
+    held_games = InvestedGame.objects.filter(user=user.user)
 
     profit = 0
 
     for share in held_shares:
-        profit -= float(share.boughtAt)*share.numSharesHeld
         if share.share.win:
             profit += float(share.numSharesHeld)*10
+
+    for exchange in soldExchanges:
+        profit += float(exchange.salePrice)*exchange.numShares
+    for exchange in boughtExchanges:
+        profit -= float(exchange.salePrice)*exchange.numShares
 
     for game in held_games:
         profit -= float(game.amountUsed)
@@ -28,17 +33,13 @@ def calculateProfit(user):
             elif game.bet == 4 and game.game.didAwaySpread:
                 profit += float(game.amountUsed)*game.oddsAtPurchase
 
-    for exchange in soldExchanges:
-        profit += float(exchange.salePrice)*exchange.numShares
-        profit -= float(exchange.inv_share.boughtAt)*exchange.numShares
-
     profit = round(profit, 2)
-    user.profile.current_profit = profit
-    user.profile.save()
+    user.current_profit = profit
+    user.save()
     return profit
 
 def calculateTotalShareProfit():
     profit = 0
-    for share in InvestedShare.objects.all():
-        profit += share.numSharesHeld*float(share.boughtAt)
+    for share in Request.objects.filter(sender__username="BallStreet"):
+        profit += share.numShares*float(share.salePrice)
     return profit

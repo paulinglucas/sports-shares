@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="seeds-header text-center mb-0">{{ event.name }}</h1>
+
+<section class="bets" id="test-{{ seed }}-seeds">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- place shares of seed in here -->
+      {% for share, prices in salesAndShares %}
+        {% include 'shares/share.html' with share=share prices=prices %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Share, Game
+from .models import Share, Category, Event, Game
 
-admin.site.register(Share)
+# class ShareAdmin(admin.ModelAdmin):
+#     readonly_fields = ('amount', )
+
+admin.site.register(Category)
+admin.site.register(Event)
 admin.site.register(Game)
+
+class ShareAdmin(admin.ModelAdmin):
+    readonly_fields = ('created', 'tradedAmount')
+
+admin.site.register(Share, ShareAdmin)
