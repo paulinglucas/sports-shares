@@ -8,6 +8,8 @@ from decimal import Decimal
 def send_sell_request(request):
     numShares = int(request.POST.get('numShares', 0))
     price = Decimal(request.POST.get('price', 0))
+    if price >= 10.00:
+        return redirect('/my_shares/')
     id = request.POST.get('id')
     inv_share = InvestedShare.objects.get(id=id)
     if numShares > inv_share.numSharesHeld:

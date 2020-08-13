@@ -70,15 +70,24 @@ class Share(models.Model):
             return "5.00"
 
     def getOdds(self, pps):
+        if pps == None:
+            return 0
+        if pps == 10:
+            return -100000
         pps = float(pps) * 10
         if pps > 50:
-            return (pps / (1 - (pps/100))) * -1
+            return round((pps / (1 - (pps/100))) * -1)
         if pps == 50:
             return 100
         else:
-            return (100 / (pps / 100)) - 100
+            return round((100 / (pps / 100)) - 100)
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.amount() > 0:
+            sales = PendingSale.objects.filter(inv_share__share__id=self.id)
+            lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
+            self.americanOdds = self.getOdds(lowest_sale)
+
         if self.done or self.win:
             self.hidden = True
         if not self.recommendedPrice:
@@ -151,7 +160,6 @@ class Game(models.Model):
         if not self.homeOdds:
             self.homeOdds = self.convertOdds(self.homeML)
         elif self.oldHomeML != self.homeML:
-            print("exxxx\n\n\n")
             self.homeOdds = self.convertOdds(self.homeML)
             self.oldHomeML = self.homeML
 
@@ -181,28 +189,30 @@ class Game(models.Model):
 
 @receiver(post_save, sender=PendingSale)
 def update_share_signal(sender, instance, created, **kwargs):
+    share = Share.objects.get(id=instance.inv_share.share.id)
     if created and instance.seller.user.username != 'BallStreet':
-        share = Share.objects.get(id=instance.inv_share.share.id)
         share.tradedAmount += instance.numShares
+        share.save()
         instance.inv_share.numSharesHeld -= instance.numShares
         instance.inv_share.save()
-        sales = PendingSale.objects.all()
-        lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
-        share.americanOdds = share.getOdds(lowest_sale)
-        share.save()
 
 @receiver(pre_delete, sender=PendingSale)
 def update_inv_share_signal(sender, instance, **kwargs):
     instance.inv_share.numSharesHeld += instance.numShares
     instance.inv_share.save()
+    share = Share.objects.get(id=instance.inv_share.share.id)
+    share.tradedAmount -= instance.numShares
+    share.save()
 
 @receiver(post_delete, sender=PendingSale)
 def update_price(sender, instance, **kwargs):
     sales = PendingSale.objects.all()
+    share = Share.objects.get(id=instance.inv_share.share.id)
     lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
     share.americanOdds = share.getOdds(lowest_sale)
     share.save()
 
+## TODO: Fix update in sale price for bllastreet pending sale according to changes
 @receiver(post_save, sender='shares.Share')
 def update_sale_signal(sender, instance, created, **kwargs):
     if created:
@@ -225,8 +235,8 @@ def update_sale_signal(sender, instance, created, **kwargs):
             sale.inv_share.save()
             sale.numShares = instance.initialAmount
 
-            if sale.salePrice < instance.recommendedPrice:
-                sale.salePrice = instance.recommendedPrice
+            if sale.salePrice < Decimal(instance.recommendedPrice):
+                sale.salePrice = Decimal(instance.recommendedPrice)
             sale.save()
         except PendingSale.DoesNotExist:
             pass
