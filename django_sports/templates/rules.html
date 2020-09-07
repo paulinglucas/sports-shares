@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+      <div class="container">
+        <div class="row rules" style="text-align:center;">
+          <h2 style="margin:auto; margin-top:30px; margin-bottom:10px;">Rules to Site</h2>
+          <p>
+            Welcome to SportsBrokerage! <br><br>
+            This website is meant to act like a free market for the sports betting industry. Investors can look across different futures in sports such as basketball,
+            baseball, and football, and choose which bets they would like to make. These bets are represented as shares that you can buy a certain amount of at the given price(s),
+            which can then either be sold at a later date or held until the outcome is decided, with the hopes that your shares pay out. Payout has been set to $10/share for the winner.
+          </p>
+          <h4 style="margin:auto; margin-top:20px; margin-bottom:10px;">Buying and Selling Shares</h4>
+          <p>
+            Shares can be purchased from the homepage, which takes you to the different futures bets one can make. Each bet will tell you how many shares are available,
+            and the price of each batch of shares. You input how many shares you'd like, and the highest price you'd be willing to pay for each share. If there's enough
+            shares for your desired price, you will pay the asking price of that amount of shares (eg. 10 shares sold at $1.00/share, 10 sold at $2.00/share, you want 15
+            shares and would be willing to pay $3.00/share, you would end up buying all 10 shares at $1.00/share and 5 shares at $2.00/share). <br><br>
+
+            Conversely, if you're ready to sell, you can go to your account page and click the share you'd like to sell. You simply input how many shares you'd be willing to sell
+            and the price you'd like to sell at. Those shares then get added to the list of available shares on the bets page, and shares are sold on a "first posted, first sold"
+            basis ascending from the lowest price.
+          </p>
+          <h4 style="margin:auto; margin-top:20px; margin-bottom:10px;">Games</h4>
+          <p>
+            This site also offers regular spread / moneyline bets on the games section. Rules apply like any other sportsbook. Enter how much you wish to either risk or win on whichever bet you choose.
+          </p>
+        </div>
+      </div>
+
+{% endblock %}

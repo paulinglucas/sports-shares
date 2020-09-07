@@ -38,6 +38,8 @@ def my_shares_view(request):
 	}
 	return render(request, 'my_shares.html', context)
 
+def rules_view(request):
+	return render(request, "rules.html")
 
 def games_view(request):
 	games = Game.objects.exclude(gameStarted=True)

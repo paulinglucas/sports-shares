@@ -2,6 +2,7 @@ from django.shortcuts import render
 from held_shares.models import InvestedShare, InvestedGame
 from exchanges.models import Request
 from decimal import Decimal
+from history.models import Payment
 
 # Create your views here.
 def calculateProfit(user):
@@ -9,6 +10,7 @@ def calculateProfit(user):
     soldExchanges = Request.objects.filter(sender=user).exclude(salePrice=-1.00)
     boughtExchanges = Request.objects.filter(receiver=user).exclude(salePrice=-1.00)
     held_games = InvestedGame.objects.filter(user=user.user)
+    payments = Payment.objects.filter(payer=user)
 
     profit = 0
 
@@ -32,6 +34,9 @@ def calculateProfit(user):
                 profit += float(game.amountUsed)*game.oddsAtPurchase
             elif game.bet == 4 and game.game.didAwaySpread:
                 profit += float(game.amountUsed)*game.oddsAtPurchase
+
+    for payment in payments:
+        profit += float(payment.amount_paid)
 
     profit = round(profit, 2)
     user.current_profit = profit

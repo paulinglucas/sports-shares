@@ -17,7 +17,7 @@ class Profile(models.Model):
     current_profit = models.DecimalField("Current Profit", max_digits=10000, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return self.user.username
+        return self.user.first_name + " " + self.user.last_name
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):

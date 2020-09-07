@@ -11,6 +11,7 @@ urlpatterns = [
 	# main pages
 	path('', views.home_view, name='homepage'),
 	path('my_shares/', views.my_shares_view, name='my_shares'),
+	path('rules/', views.rules_view, name="rules"),
 	# login views
 	path('login/', login_views.login_view, name="login"),
 	path('login_success/', login_views.login_success_view, name="login_success"),
@@ -31,6 +32,6 @@ urlpatterns = [
 	# games
 	path('games/', views.games_view, name='games'),
 	path('game_success/', invest_views.game_success_view, name="game_success"),
-	
+
 
 ]
