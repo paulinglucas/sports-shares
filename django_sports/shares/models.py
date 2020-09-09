@@ -86,7 +86,8 @@ class Share(models.Model):
         if self.amount() > 0:
             sales = PendingSale.objects.filter(inv_share__share__id=self.id)
             lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
-            self.americanOdds = self.getOdds(lowest_sale)
+            if lowest_sale != None:
+                self.americanOdds = self.getOdds(lowest_sale)
 
         if self.done or self.win:
             self.hidden = True
@@ -95,7 +96,6 @@ class Share(models.Model):
         if self.oldOdds != self.americanOdds:
             self.recommendedPrice = self.getPPS(self.americanOdds)
             self.oldOdds = self.americanOdds
-            self.save()
         super().save(*args, **kwargs)
 
 class Game(models.Model):
@@ -198,19 +198,21 @@ def update_share_signal(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=PendingSale)
 def update_inv_share_signal(sender, instance, **kwargs):
-    instance.inv_share.numSharesHeld += instance.numShares
-    instance.inv_share.save()
-    share = Share.objects.get(id=instance.inv_share.share.id)
-    share.tradedAmount -= instance.numShares
-    share.save()
+    if instance.seller.username != 'BallStreet':
+        instance.inv_share.numSharesHeld += instance.numShares
+        instance.inv_share.save()
+        share = Share.objects.get(id=instance.inv_share.share.id)
+        share.tradedAmount -= instance.numShares
+        share.save()
 
 @receiver(post_delete, sender=PendingSale)
 def update_price(sender, instance, **kwargs):
-    sales = PendingSale.objects.all()
-    share = Share.objects.get(id=instance.inv_share.share.id)
-    lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
-    share.americanOdds = share.getOdds(lowest_sale)
-    share.save()
+    if instance.seller.username != 'BallStreet':
+        sales = PendingSale.objects.all()
+        share = Share.objects.get(id=instance.inv_share.share.id)
+        lowest_sale = sales.aggregate(Min('salePrice'))['salePrice__min']
+        share.americanOdds = share.getOdds(lowest_sale)
+        share.save()
 
 ## TODO: Fix update in sale price for bllastreet pending sale according to changes
 @receiver(post_save, sender='shares.Share')

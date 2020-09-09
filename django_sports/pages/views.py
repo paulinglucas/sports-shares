@@ -16,8 +16,6 @@ def checkIfGamesWon():
 			game.save()
 
 def home_view(request):
-	shares = Share.objects.exclude(done=True)
-	active_seeds = []
 	checkIfGamesWon()
 	return render(request, 'index.html')
 
@@ -59,7 +57,7 @@ def user_history_view(request):
 	return render(request, 'shares/user/history.html', context)
 
 def events_view(request, sport):
-	bets = Event.objects.filter(category=Category.objects.get(name=sport))
+	bets = Event.objects.filter(category=Category.objects.get(name=sport)).filter(done=False)
 	print(bets)
 	context = {
 		'bets': bets,
@@ -69,7 +67,7 @@ def events_view(request, sport):
 
 def event_view(request, sport, id):
 	event = Event.objects.get(id=id)
-	people = Share.objects.filter(event=event)
+	people = Share.objects.filter(event=event).filter(hidden=False)
 
 	salesAndShares = []
 
